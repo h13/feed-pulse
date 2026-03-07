@@ -20,10 +20,10 @@ use H13\FeedPulse\Notifier\SlackNotifier;
 use H13\FeedPulse\Publisher\PublisherPool;
 use H13\FeedPulse\Publisher\WordPressPublisher;
 use H13\FeedPulse\Publisher\XPublisher;
+use H13\FeedPulse\Reason\ChannelConfig;
 use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
-use Symfony\Component\Yaml\Yaml;
 
 class AppModule extends AbstractAppModule
 {
@@ -70,18 +70,13 @@ class AppModule extends AbstractAppModule
 
     private function buildPublisherPool(): PublisherPool
     {
-        $channelsDir = $this->appDir . '/config/channels';
-        $files = glob("{$channelsDir}/*.yaml") ?: [];
+        $channelConfig = new ChannelConfig($this->appDir);
+        $channels = $channelConfig->loadEnabled();
         $publishers = [];
 
-        foreach ($files as $file) {
-            $config = Yaml::parseFile($file);
-            if (! is_array($config) || ! ($config['channel']['enabled'] ?? false)) {
-                continue;
-            }
-
-            $name = $config['channel']['name'] ?? '';
-            $type = $config['channel']['type'] ?? '';
+        foreach ($channels as $config) {
+            $name = $config['name'] ?? '';
+            $type = $config['type'] ?? '';
             $publisher = $this->createPublisher($type, $config);
 
             if ($publisher !== null) {
@@ -127,7 +122,7 @@ class AppModule extends AbstractAppModule
             return null;
         }
 
-        $status = $config['channel']['publish']['status'] ?? 'draft';
+        $status = $config['publish']['status'] ?? 'draft';
 
         return new WordPressPublisher($url, $user, $password, $status);
     }

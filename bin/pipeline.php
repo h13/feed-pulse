@@ -19,7 +19,7 @@ echo "[crawl+match] Found {$feeds->body['count']} matched item(s)\n";
 
 if ($feeds->body['count'] === 0) {
     echo "[done] Nothing new to process\n";
-    exit(0);
+    return;
 }
 
 foreach ($feeds->body['items'] as $item) {
@@ -38,7 +38,7 @@ $drafts = $resource->post('app://self/drafts');
 
 if ($drafts->code === 204) {
     echo "[done] No new items to process\n";
-    exit(0);
+    return;
 }
 
 echo "[generate] Created {$drafts->body['count']} draft(s)\n";

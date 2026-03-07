@@ -12,12 +12,10 @@ use Ray\Di\Di\Inject;
 #[Tool(description: 'View publish history')]
 class History extends ResourceObject
 {
-    private HistoryStore $historyStore;
-
     #[Inject]
-    public function __construct(HistoryStore $historyStore)
-    {
-        $this->historyStore = $historyStore;
+    public function __construct(
+        private readonly HistoryStore $historyStore,
+    ) {
     }
 
     /** List all publish history entries (newest first) */

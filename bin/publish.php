@@ -19,7 +19,7 @@ $result = $resource->post('app://self/publish', $params);
 
 if ($result->code === 204) {
     echo "[publish] No drafts to publish\n";
-    exit(0);
+    return;
 }
 
 echo "[publish] Published: {$result->body['published']}, Failed: {$result->body['failed']}\n";
