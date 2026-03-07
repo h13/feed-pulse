@@ -1,58 +1,8 @@
 services:
   app:
-    build:
-      context: .
-      target: prod
+    build: .
     volumes:
       - .:/app
-      - vendor:/app/vendor
-    env_file:
-      - env.json
     working_dir: /app
-
-  pipeline:
-    build:
-      context: .
-      target: prod
-    volumes:
-      - .:/app
-      - vendor:/app/vendor
     env_file:
       - env.json
-    command: ["bin/pipeline.php"]
-
-  publish:
-    build:
-      context: .
-      target: prod
-    volumes:
-      - .:/app
-      - vendor:/app/vendor
-    env_file:
-      - env.json
-    command: ["bin/publish.php"]
-
-  agent:
-    build:
-      context: .
-      target: prod
-    volumes:
-      - .:/app
-      - vendor:/app/vendor
-    env_file:
-      - env.json
-    command: ["bin/agent.php"]
-
-  qa:
-    build:
-      context: .
-      target: qa
-    volumes:
-      - .:/app
-      - vendor-dev:/app/vendor
-    entrypoint: ["composer"]
-    command: ["tests"]
-
-volumes:
-  vendor:
-  vendor-dev:

@@ -6,36 +6,36 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Build production image
-        run: docker build --target prod -t feed-pulse:ci .
-
-      - name: Verify image runs
-        run: docker run --rm feed-pulse:ci -v
-
   qa:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Build QA image
-        run: docker build --target qa -t feed-pulse:qa .
+      - uses: shivammathur/setup-php@cf4cade2721270509d5b1c766ab3549210a39a2a # v2.34.1
+        with:
+          php-version: '8.4'
+          extensions: curl, xml
+          tools: composer:v2
+
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - run: composer install --no-interaction --prefer-dist
 
       - name: Coding standards
-        run: docker run --rm feed-pulse:qa vendor/bin/phpcs
+        run: vendor/bin/phpcs
 
       - name: PHPStan
-        run: docker run --rm feed-pulse:qa vendor/bin/phpstan analyse --no-progress -c phpstan.neon
+        run: vendor/bin/phpstan analyse --no-progress -c phpstan.neon
 
       - name: Psalm
-        run: docker run --rm feed-pulse:qa vendor/bin/psalm --no-progress
+        run: vendor/bin/psalm --no-progress
 
       - name: PHPMD
-        run: docker run --rm feed-pulse:qa vendor/bin/phpmd src text ./phpmd.xml
+        run: vendor/bin/phpmd src text ./phpmd.xml
 
       - name: PHPUnit
-        run: docker run --rm feed-pulse:qa vendor/bin/phpunit
+        run: vendor/bin/phpunit
