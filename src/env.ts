@@ -3,6 +3,12 @@ import { z } from "zod"
 const schema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1, "ANTHROPIC_API_KEY is required"),
 
+  // Slack
+  SLACK_WEBHOOK_URL: z.string().url().optional(),
+
+  // GitHub (for PR creation in publish workflow)
+  GITHUB_REPOSITORY: z.string().optional(),
+
   // WordPress (optional, required when blog channel is enabled)
   WORDPRESS_API_URL: z.string().url().optional(),
   WORDPRESS_USER: z.string().optional(),

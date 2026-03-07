@@ -8,7 +8,7 @@
   },
   "scripts": {
     "pipeline": "node --env-file=.env --import=tsx src/pipeline.ts",
-    "crawl": "tsx src/crawl.ts",
+    "publish": "node --env-file=.env --import=tsx src/publish-drafts.ts",
     "typecheck": "tsc"
   },
   "dependencies": {

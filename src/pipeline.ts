@@ -1,7 +1,9 @@
 import { crawlAll } from "./crawl.js"
 import { matchItems } from "./match.js"
 import { generateAll } from "./generate.js"
-import { publishAll } from "./publish.js"
+import { saveDrafts } from "./draft.js"
+import { notifySlack } from "./notify.js"
+import { env } from "./env.js"
 import { loadState, saveState, isProcessed, markProcessed } from "./state.js"
 
 async function main() {
@@ -32,24 +34,18 @@ async function main() {
   // Phase 2: generate content via Claude API
   const generated = await generateAll(newItems)
 
-  for (const content of generated) {
-    console.log(`\n=== Generated [${content.channel}] ===`)
-    console.log(content.content)
-    console.log("===")
-  }
+  // Save as drafts for review
+  const drafts = saveDrafts(generated)
+  console.log(`\n[draft] Saved ${drafts.length} draft(s) to state/drafts/`)
 
-  // Phase 3: publish to channels
-  if (generated.length > 0) {
-    console.log("\n[publish] Publishing to channels...")
-    const results = await publishAll(generated)
-
-    for (const result of results) {
-      if (result.error) {
-        console.error(`[publish] FAIL ${result.channel}: ${result.error}`)
-      } else {
-        console.log(`[publish] OK ${result.channel}: ${result.url}`)
-      }
-    }
+  // Notify Slack
+  if (env.SLACK_WEBHOOK_URL) {
+    const repoUrl = env.GITHUB_REPOSITORY
+      ? `https://github.com/${env.GITHUB_REPOSITORY}`
+      : "https://github.com/h13/feed-pulse"
+    console.log("[notify] Sending Slack notification...")
+    await notifySlack(env.SLACK_WEBHOOK_URL, drafts, repoUrl)
+    console.log("[notify] Slack notification sent")
   }
 
   const updatedState = markProcessed(
