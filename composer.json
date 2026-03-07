@@ -6,8 +6,8 @@
   "require": {
     "php": ">=8.4",
     "bear/package": "^1.0",
-    "bear/tool-use": "^0.1",
-    "be-framework/be": "^0.1",
+    "bear/tool-use": "dev-main",
+    "be-framework/be": "0.x-dev",
     "koriym/env-json": "^1.0",
     "laminas/laminas-feed": "^2.0",
     "symfony/yaml": "^7.0"
@@ -33,6 +33,14 @@
     "publish": "php bin/publish.php",
     "agent": "php bin/agent.php"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/bearsunday/BEAR.ToolUse"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "config": {
     "sort-packages": true
   }

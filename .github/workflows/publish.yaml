@@ -7,15 +7,17 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: jdx/mise-action@v2
-
-      - run: composer install --no-interaction --prefer-dist
+      - name: Build image
+        run: docker build -t "$IMAGE" .
 
       - name: Create env.json
         run: |
@@ -49,7 +51,12 @@ jobs:
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
 
-      - run: composer publish
+      - name: Run publish
+        run: |
+          docker run --rm \
+            -v "$PWD/state:/app/state" \
+            -v "$PWD/env.json:/app/env.json:ro" \
+            "$IMAGE" bin/publish.php
 
       - name: Create PR with publish history
         env:
