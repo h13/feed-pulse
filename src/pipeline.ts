@@ -1,6 +1,7 @@
 import { crawlAll } from "./crawl.js"
 import { matchItems } from "./match.js"
 import { generateAll } from "./generate.js"
+import { publishAll } from "./publish.js"
 import { loadState, saveState, isProcessed, markProcessed } from "./state.js"
 
 async function main() {
@@ -37,7 +38,19 @@ async function main() {
     console.log("===")
   }
 
-  // TODO Phase 3: publish to channels
+  // Phase 3: publish to channels
+  if (generated.length > 0) {
+    console.log("\n[publish] Publishing to channels...")
+    const results = await publishAll(generated)
+
+    for (const result of results) {
+      if (result.error) {
+        console.error(`[publish] FAIL ${result.channel}: ${result.error}`)
+      } else {
+        console.log(`[publish] OK ${result.channel}: ${result.url}`)
+      }
+    }
+  }
 
   const updatedState = markProcessed(
     newItems.map((item) => item.link),
