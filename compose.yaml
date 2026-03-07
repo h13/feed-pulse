@@ -1,0 +1,39 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    env_file:
+      - env.json
+    working_dir: /app
+
+  pipeline:
+    build: .
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    env_file:
+      - env.json
+    command: ["bin/pipeline.php"]
+
+  publish:
+    build: .
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    env_file:
+      - env.json
+    command: ["bin/publish.php"]
+
+  agent:
+    build: .
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    env_file:
+      - env.json
+    command: ["bin/agent.php"]
+
+volumes:
+  vendor:

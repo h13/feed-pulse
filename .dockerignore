@@ -1,0 +1,8 @@
+vendor/
+node_modules/
+state/
+var/
+env.json
+.env
+.git/
+.github/
