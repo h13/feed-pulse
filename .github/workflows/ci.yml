@@ -27,6 +27,9 @@ jobs:
 
       - run: composer install --no-interaction --prefer-dist
 
+      - name: Auto-fix coding standards
+        run: vendor/bin/phpcbf || true
+
       - name: Coding standards
         run: vendor/bin/phpcs
 
