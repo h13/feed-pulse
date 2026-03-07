@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace H13\FeedPulse\Reason;
+namespace H13\FeedPulse\Source;
 
+use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\Entity\FeedItem;
 use Laminas\Feed\Reader\Reader;
 use Symfony\Component\Yaml\Yaml;
 
-final class Crawler
+final class RssSource implements SourceInterface
 {
     private readonly string $configPath;
 
@@ -17,10 +18,8 @@ final class Crawler
         $this->configPath = dirname(__DIR__, 2) . '/config/sources.yaml';
     }
 
-    /**
-     * @return list<FeedItem>
-     */
-    public function crawl(): array
+    /** @return list<FeedItem> */
+    public function fetch(): array
     {
         $config = Yaml::parseFile($this->configPath);
         $sources = $config['sources'] ?? [];

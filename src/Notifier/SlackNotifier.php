@@ -2,29 +2,27 @@
 
 declare(strict_types=1);
 
-namespace H13\FeedPulse\Reason;
+namespace H13\FeedPulse\Notifier;
 
+use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
+use Ray\Di\Di\Named;
 
-final class Notifier
+final class SlackNotifier implements NotifierInterface
 {
     public function __construct(
-        private readonly ?string $webhookUrl = null,
+        #[Named('slack_webhook_url')]
+        private readonly string $webhookUrl,
+        #[Named('repo_url')]
         private readonly string $repoUrl = 'https://github.com/h13/feed-pulse',
     ) {
     }
 
-    /**
-     * @param list<Draft> $drafts
-     */
+    /** @param list<Draft> $drafts */
     public function notify(array $drafts): void
     {
-        if ($this->webhookUrl === null || $this->webhookUrl === '') {
-            return;
-        }
-
         $blocks = [
-            ['type' => 'header', 'text' => ['type' => 'plain_text', 'text' => "feed-pulse: " . count($drafts) . " draft(s) ready"]],
+            ['type' => 'header', 'text' => ['type' => 'plain_text', 'text' => 'feed-pulse: ' . count($drafts) . ' draft(s) ready']],
             ['type' => 'divider'],
         ];
 
@@ -61,13 +59,9 @@ final class Notifier
         $this->sendWebhook($blocks);
     }
 
-    /**
-     * @param list<array<string, mixed>> $blocks
-     */
+    /** @param list<array<string, mixed>> $blocks */
     private function sendWebhook(array $blocks): void
     {
-        assert($this->webhookUrl !== null);
-
         $ch = curl_init($this->webhookUrl);
         if ($ch === false) {
             throw new \RuntimeException('Failed to initialize curl');

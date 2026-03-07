@@ -6,39 +6,26 @@ namespace H13\FeedPulse\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\ToolUse\Attribute\Tool;
-use H13\FeedPulse\Reason\Crawler;
+use H13\FeedPulse\Contract\NotifierInterface;
+use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\DraftStore;
 use H13\FeedPulse\Reason\Generator;
 use H13\FeedPulse\Reason\Matcher;
-use H13\FeedPulse\Reason\Notifier;
 use H13\FeedPulse\Reason\StateStore;
 use Ray\Di\Di\Inject;
 
 #[Tool(description: 'List or generate content drafts from matched feed items')]
 class Drafts extends ResourceObject
 {
-    private Crawler $crawler;
-    private Matcher $matcher;
-    private Generator $generator;
-    private DraftStore $draftStore;
-    private StateStore $stateStore;
-    private Notifier $notifier;
-
     #[Inject]
     public function __construct(
-        Crawler $crawler,
-        Matcher $matcher,
-        Generator $generator,
-        DraftStore $draftStore,
-        StateStore $stateStore,
-        Notifier $notifier,
+        private readonly SourceInterface $source,
+        private readonly Matcher $matcher,
+        private readonly Generator $generator,
+        private readonly DraftStore $draftStore,
+        private readonly StateStore $stateStore,
+        private readonly NotifierInterface $notifier,
     ) {
-        $this->crawler = $crawler;
-        $this->matcher = $matcher;
-        $this->generator = $generator;
-        $this->draftStore = $draftStore;
-        $this->stateStore = $stateStore;
-        $this->notifier = $notifier;
     }
 
     /** List all pending drafts */
@@ -63,11 +50,11 @@ class Drafts extends ResourceObject
     /**
      * Generate new drafts from matched feed items.
      *
-     * @param bool $notify Send Slack notification after generation (default: true)
+     * @param bool $notify Send notification after generation (default: true)
      */
     public function onPost(bool $notify = true): static
     {
-        $items = $this->crawler->crawl();
+        $items = $this->source->fetch();
         $matched = $this->matcher->match($items);
 
         $newItems = array_values(array_filter(

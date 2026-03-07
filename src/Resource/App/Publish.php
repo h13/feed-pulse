@@ -6,24 +6,20 @@ namespace H13\FeedPulse\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\ToolUse\Attribute\Tool;
+use H13\FeedPulse\Publisher\PublisherPool;
 use H13\FeedPulse\Reason\DraftStore;
 use H13\FeedPulse\Reason\HistoryStore;
-use H13\FeedPulse\Reason\Publisher;
 use Ray\Di\Di\Inject;
 
 #[Tool(description: 'Publish pending drafts to configured channels', confirm: true)]
 class Publish extends ResourceObject
 {
-    private Publisher $publisher;
-    private DraftStore $draftStore;
-    private HistoryStore $historyStore;
-
     #[Inject]
-    public function __construct(Publisher $publisher, DraftStore $draftStore, HistoryStore $historyStore)
-    {
-        $this->publisher = $publisher;
-        $this->draftStore = $draftStore;
-        $this->historyStore = $historyStore;
+    public function __construct(
+        private readonly PublisherPool $publisherPool,
+        private readonly DraftStore $draftStore,
+        private readonly HistoryStore $historyStore,
+    ) {
     }
 
     /**
@@ -47,7 +43,7 @@ class Publish extends ResourceObject
 
         $results = [];
         foreach ($drafts as $draft) {
-            $result = $this->publisher->publish($draft);
+            $result = $this->publisherPool->publish($draft);
             $results[] = $result;
 
             if ($result->isSuccess()) {

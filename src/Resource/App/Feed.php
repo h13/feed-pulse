@@ -6,35 +6,29 @@ namespace H13\FeedPulse\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\ToolUse\Attribute\Tool;
-use H13\FeedPulse\Reason\Crawler;
+use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Reason\StateStore;
 use Ray\Di\Di\Inject;
 
-#[Tool(description: 'Crawl RSS feeds, match against interests, and return scored items')]
+#[Tool(description: 'Crawl feeds, match against interests, and return scored items')]
 class Feed extends ResourceObject
 {
-    private Crawler $crawler;
-    private Matcher $matcher;
-    private StateStore $stateStore;
-
     #[Inject]
-    public function __construct(Crawler $crawler, Matcher $matcher, StateStore $stateStore)
-    {
-        $this->crawler = $crawler;
-        $this->matcher = $matcher;
-        $this->stateStore = $stateStore;
+    public function __construct(
+        private readonly SourceInterface $source,
+        private readonly Matcher $matcher,
+        private readonly StateStore $stateStore,
+    ) {
     }
 
     /**
-     * Crawl configured RSS feeds and return interest-matched items.
-     *
      * @param float $threshold Minimum score to include (default: 0.5)
      * @param bool  $newOnly   Only return items not previously processed (default: true)
      */
     public function onGet(float $threshold = 0.5, bool $newOnly = true): static
     {
-        $items = $this->crawler->crawl();
+        $items = $this->source->fetch();
         $matched = $this->matcher->match($items, $threshold);
 
         if ($newOnly) {
