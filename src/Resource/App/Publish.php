@@ -52,9 +52,11 @@ class Publish extends ResourceObject
             $result = $this->publisherPool->publish($draft);
             $results[] = $result;
 
-            if ($result->isSuccess()) {
-                $this->draftStore->delete($draft->id);
+            if (! $result->isSuccess()) {
+                continue;
             }
+
+            $this->draftStore->delete($draft->id);
         }
 
         $this->historyStore->save($results);

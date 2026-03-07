@@ -87,9 +87,11 @@ final class DraftStore
     public function delete(string $id): void
     {
         $path = "{$this->dir}/{$id}.json";
-        if (file_exists($path)) {
-            unlink($path);
+        if (! file_exists($path)) {
+            return;
         }
+
+        unlink($path);
     }
 
     public function clear(): void

@@ -63,10 +63,13 @@ final class Generator
 
         if (is_array($persona)) {
             foreach (['tone', 'style', 'language'] as $key) {
-                if (isset($persona[$key])) {
-                    $parts[] = ucfirst($key) . ": {$persona[$key]}";
+                if (! isset($persona[$key])) {
+                    continue;
                 }
+
+                $parts[] = ucfirst($key) . ": {$persona[$key]}";
             }
+
             if (isset($persona['max_length'])) {
                 $parts[] = "Max length: {$persona['max_length']} characters";
             }
