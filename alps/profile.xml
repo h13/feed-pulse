@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+
+  <title>Feed Pulse</title>
+  <doc>Automated content pipeline: crawl → match → generate → publish</doc>
+
+  <!-- ==================== Semantic Descriptors ==================== -->
+
+  <!-- Feed item -->
+  <descriptor id="feedTitle" type="semantic">
+    <doc>Title of the feed item</doc>
+  </descriptor>
+  <descriptor id="feedLink" type="semantic">
+    <doc>URL of the original article</doc>
+  </descriptor>
+  <descriptor id="feedDescription" type="semantic">
+    <doc>Summary or description of the feed item</doc>
+  </descriptor>
+  <descriptor id="feedPubDate" type="semantic">
+    <doc>Publication date of the feed item</doc>
+  </descriptor>
+  <descriptor id="feedSource" type="semantic">
+    <doc>Name of the feed source</doc>
+  </descriptor>
+  <descriptor id="feedCategory" type="semantic">
+    <doc>Category of the feed source</doc>
+  </descriptor>
+
+  <!-- Scoring -->
+  <descriptor id="score" type="semantic">
+    <doc>Interest match score (0.0 - n.0, sum of matched topic weights)</doc>
+  </descriptor>
+  <descriptor id="matchedTopics" type="semantic">
+    <doc>List of interest topics that matched</doc>
+  </descriptor>
+
+  <!-- Draft -->
+  <descriptor id="draftId" type="semantic">
+    <doc>Unique identifier for a draft</doc>
+  </descriptor>
+  <descriptor id="channel" type="semantic">
+    <doc>Target channel name (blog, x, etc.)</doc>
+  </descriptor>
+  <descriptor id="content" type="semantic">
+    <doc>Generated content text</doc>
+  </descriptor>
+  <descriptor id="createdAt" type="semantic">
+    <doc>ISO 8601 timestamp of draft creation</doc>
+  </descriptor>
+
+  <!-- Publish -->
+  <descriptor id="publishUrl" type="semantic">
+    <doc>URL of the published content</doc>
+  </descriptor>
+  <descriptor id="publishedAt" type="semantic">
+    <doc>ISO 8601 timestamp of publication</doc>
+  </descriptor>
+  <descriptor id="error" type="semantic">
+    <doc>Error message if publishing failed</doc>
+  </descriptor>
+
+  <!-- ==================== States ==================== -->
+
+  <descriptor id="FeedCollection" type="semantic">
+    <doc>Collection of crawled feed items</doc>
+    <descriptor href="#feedTitle" />
+    <descriptor href="#feedLink" />
+    <descriptor href="#feedDescription" />
+    <descriptor href="#feedPubDate" />
+    <descriptor href="#feedSource" />
+    <descriptor href="#feedCategory" />
+    <descriptor href="#doMatchFeeds" />
+  </descriptor>
+
+  <descriptor id="MatchedFeedCollection" type="semantic">
+    <doc>Feed items scored against interest topics</doc>
+    <descriptor href="#feedTitle" />
+    <descriptor href="#feedLink" />
+    <descriptor href="#feedDescription" />
+    <descriptor href="#score" />
+    <descriptor href="#matchedTopics" />
+    <descriptor href="#doGenerateDrafts" />
+  </descriptor>
+
+  <descriptor id="DraftCollection" type="semantic">
+    <doc>Collection of generated content drafts awaiting review</doc>
+    <descriptor href="#draftId" />
+    <descriptor href="#channel" />
+    <descriptor href="#content" />
+    <descriptor href="#feedTitle" />
+    <descriptor href="#createdAt" />
+    <descriptor href="#goDraft" />
+    <descriptor href="#doPublishAll" />
+  </descriptor>
+
+  <descriptor id="Draft" type="semantic">
+    <doc>A single generated content draft</doc>
+    <descriptor href="#draftId" />
+    <descriptor href="#channel" />
+    <descriptor href="#content" />
+    <descriptor href="#feedTitle" />
+    <descriptor href="#feedLink" />
+    <descriptor href="#matchedTopics" />
+    <descriptor href="#createdAt" />
+    <descriptor href="#doPublish" />
+    <descriptor href="#doDeleteDraft" />
+    <descriptor href="#goDraftCollection" />
+  </descriptor>
+
+  <descriptor id="PublishResult" type="semantic">
+    <doc>Result of publishing a draft</doc>
+    <descriptor href="#channel" />
+    <descriptor href="#feedTitle" />
+    <descriptor href="#publishUrl" />
+    <descriptor href="#publishedAt" />
+    <descriptor href="#error" />
+    <descriptor href="#goHistory" />
+  </descriptor>
+
+  <descriptor id="PublishHistory" type="semantic">
+    <doc>Historical record of published content</doc>
+    <descriptor href="#publishedAt" />
+    <descriptor href="#channel" />
+    <descriptor href="#feedTitle" />
+    <descriptor href="#publishUrl" />
+    <descriptor href="#error" />
+  </descriptor>
+
+  <!-- ==================== Transitions ==================== -->
+
+  <descriptor id="doMatchFeeds" type="unsafe" rt="#MatchedFeedCollection">
+    <doc>Score crawled feeds against interest topics</doc>
+  </descriptor>
+
+  <descriptor id="doGenerateDrafts" type="unsafe" rt="#DraftCollection">
+    <doc>Generate content drafts from matched feeds via Claude API</doc>
+  </descriptor>
+
+  <descriptor id="goDraft" type="safe" rt="#Draft">
+    <doc>View a single draft</doc>
+    <descriptor href="#draftId" />
+  </descriptor>
+
+  <descriptor id="goDraftCollection" type="safe" rt="#DraftCollection">
+    <doc>Return to draft list</doc>
+  </descriptor>
+
+  <descriptor id="doPublish" type="unsafe" rt="#PublishResult">
+    <doc>Publish a single draft to its target channel</doc>
+    <descriptor href="#draftId" />
+  </descriptor>
+
+  <descriptor id="doPublishAll" type="unsafe" rt="#PublishResult">
+    <doc>Publish all pending drafts</doc>
+  </descriptor>
+
+  <descriptor id="doDeleteDraft" type="idempotent" rt="#DraftCollection">
+    <doc>Delete a draft</doc>
+    <descriptor href="#draftId" />
+  </descriptor>
+
+  <descriptor id="goHistory" type="safe" rt="#PublishHistory">
+    <doc>View publish history</doc>
+  </descriptor>
+
+</alps>

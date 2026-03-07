@@ -11,14 +11,34 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@v4
 
-      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
+      - uses: jdx/mise-action@v2
 
-      - run: corepack enable pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: composer install --no-interaction --prefer-dist
 
-      - run: pnpm run publish
+      - name: Create env.json
+        run: |
+          jq -n \
+            --arg key "$ANTHROPIC_API_KEY" \
+            --arg wp_url "$WORDPRESS_API_URL" \
+            --arg wp_user "$WORDPRESS_USER" \
+            --arg wp_pass "$WORDPRESS_APP_PASSWORD" \
+            --arg x_key "$X_API_KEY" \
+            --arg x_secret "$X_API_SECRET" \
+            --arg x_token "$X_ACCESS_TOKEN" \
+            --arg x_token_secret "$X_ACCESS_SECRET" \
+            '{
+              "$schema":"./env.schema.json",
+              "ANTHROPIC_API_KEY":$key,
+              "WORDPRESS_API_URL":$wp_url,
+              "WORDPRESS_USER":$wp_user,
+              "WORDPRESS_APP_PASSWORD":$wp_pass,
+              "X_API_KEY":$x_key,
+              "X_API_SECRET":$x_secret,
+              "X_ACCESS_TOKEN":$x_token,
+              "X_ACCESS_SECRET":$x_token_secret
+            }' > env.json
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
@@ -28,6 +48,8 @@ jobs:
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+
+      - run: composer publish
 
       - name: Create PR with publish history
         env:

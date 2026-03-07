@@ -1,0 +1,39 @@
+{
+  "name": "h13/feed-pulse",
+  "description": "Automated content pipeline: crawl → match → generate → publish",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.3",
+    "bear/package": "^1.0",
+    "bear/tool-use": "^0.1",
+    "be-framework/be": "^0.1",
+    "koriym/env-json": "^1.0",
+    "laminas/laminas-feed": "^2.0",
+    "symfony/yaml": "^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0",
+    "phpstan/phpstan": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "H13\\FeedPulse\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "H13\\FeedPulse\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "sa": "phpstan analyse -c phpstan.neon",
+    "pipeline": "php bin/pipeline.php",
+    "publish": "php bin/publish.php",
+    "agent": "php bin/agent.php"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
