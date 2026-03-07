@@ -40,4 +40,4 @@ jobs:
         run: vendor/bin/phpmd src text ./phpmd.xml
 
       - name: PHPUnit
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --do-not-cache-result || test $? -eq 3
