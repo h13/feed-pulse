@@ -9,8 +9,8 @@ final readonly class PublishResult
     public function __construct(
         public string $channel,
         public string $title,
-        public ?string $url,
-        public ?string $error,
+        public string|null $url,
+        public string|null $error,
         public string $publishedAt,
     ) {
     }

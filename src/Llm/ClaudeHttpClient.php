@@ -6,6 +6,15 @@ namespace H13\FeedPulse\Llm;
 
 use Ray\Di\Di\Named;
 
+use function curl_close;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt_array;
+use function is_string;
+use function json_decode;
+use function json_encode;
+
 final class ClaudeHttpClient
 {
     private const API_URL = 'https://api.anthropic.com/v1/messages';

@@ -6,6 +6,10 @@ namespace H13\FeedPulse\Llm;
 
 use H13\FeedPulse\Contract\LlmInterface;
 
+use function array_filter;
+use function array_map;
+use function implode;
+
 final class ClaudeLlm implements LlmInterface
 {
     private const MODEL = 'claude-haiku-4-5-20251001';

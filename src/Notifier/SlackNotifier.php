@@ -8,6 +8,17 @@ use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use Ray\Di\Di\Named;
 
+use function count;
+use function curl_close;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt_array;
+use function implode;
+use function json_encode;
+use function mb_strlen;
+use function mb_substr;
+
 final class SlackNotifier implements NotifierInterface
 {
     public function __construct(

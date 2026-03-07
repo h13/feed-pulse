@@ -10,6 +10,13 @@ use H13\FeedPulse\Reason\Entity\ScoredItem;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
+use function array_filter;
+use function array_map;
+use function array_values;
+use function str_contains;
+use function strtolower;
+use function usort;
+
 final class Matcher implements MatcherInterface
 {
     private readonly string $configPath;

@@ -10,6 +10,9 @@ use Laminas\Feed\Reader\Reader;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
+use function error_log;
+use function strip_tags;
+
 final class RssSource implements SourceInterface
 {
     private readonly string $configPath;

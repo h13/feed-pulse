@@ -15,6 +15,12 @@ use H13\FeedPulse\Reason\Generator;
 use H13\FeedPulse\Reason\StateStore;
 use Ray\Di\Di\Inject;
 
+use function array_filter;
+use function array_map;
+use function array_slice;
+use function array_values;
+use function count;
+
 #[Tool(description: 'List or generate content drafts from matched feed items')]
 class Drafts extends ResourceObject
 {

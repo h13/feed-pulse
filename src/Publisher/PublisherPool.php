@@ -8,6 +8,8 @@ use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
 
+use function date;
+
 final class PublisherPool
 {
     /** @param array<string, PublisherInterface> $publishers channel name → publisher */

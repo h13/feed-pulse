@@ -9,6 +9,19 @@ use H13\FeedPulse\Reason\Entity\FeedItem;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
 use Ray\Di\Di\Named;
 
+use function array_filter;
+use function array_map;
+use function array_values;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function glob;
+use function is_dir;
+use function json_decode;
+use function json_encode;
+use function mkdir;
+use function unlink;
+
 final class DraftStore
 {
     private readonly string $dir;
@@ -82,7 +95,7 @@ final class DraftStore
         }
     }
 
-    private function loadFile(string $path): ?Draft
+    private function loadFile(string $path): Draft|null
     {
         $raw = file_get_contents($path);
         if ($raw === false) {

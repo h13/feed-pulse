@@ -11,6 +11,11 @@ use H13\FeedPulse\Reason\DraftStore;
 use H13\FeedPulse\Reason\HistoryStore;
 use Ray\Di\Di\Inject;
 
+use function array_filter;
+use function array_map;
+use function array_values;
+use function count;
+
 #[Tool(description: 'Publish pending drafts to configured channels', confirm: true)]
 class Publish extends ResourceObject
 {
@@ -27,7 +32,7 @@ class Publish extends ResourceObject
      *
      * @param string|null $draftId Publish a specific draft (null = publish all)
      */
-    public function onPost(?string $draftId = null): static
+    public function onPost(string|null $draftId = null): static
     {
         $drafts = $this->draftStore->loadAll();
 

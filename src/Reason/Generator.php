@@ -9,6 +9,19 @@ use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
 use Ray\Di\Di\Named;
 
+use function array_map;
+use function date;
+use function file_get_contents;
+use function glob;
+use function implode;
+use function is_array;
+use function is_dir;
+use function preg_replace;
+use function str_replace;
+use function strtolower;
+use function substr;
+use function ucfirst;
+
 final class Generator
 {
     private readonly string $promptsDir;

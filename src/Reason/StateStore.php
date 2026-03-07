@@ -6,6 +6,19 @@ namespace H13\FeedPulse\Reason;
 
 use Ray\Di\Di\Named;
 
+use function array_unique;
+use function array_values;
+use function date;
+use function dirname;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function in_array;
+use function is_dir;
+use function json_decode;
+use function json_encode;
+use function mkdir;
+
 final class StateStore
 {
     private readonly string $path;

@@ -25,6 +25,8 @@ use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
 
+use function getenv;
+
 class AppModule extends AbstractAppModule
 {
     protected function configure(): void
@@ -63,9 +65,11 @@ class AppModule extends AbstractAppModule
         if ($webhookUrl !== '') {
             $this->bind()->annotatedWith('slack_webhook_url')->toInstance($webhookUrl);
             $this->bind(NotifierInterface::class)->to(SlackNotifier::class);
-        } else {
-            $this->bind(NotifierInterface::class)->to(NullNotifier::class);
+
+            return;
         }
+
+        $this->bind(NotifierInterface::class)->to(NullNotifier::class);
     }
 
     private function buildPublisherPool(): PublisherPool
@@ -79,16 +83,18 @@ class AppModule extends AbstractAppModule
             $type = $config['type'] ?? '';
             $publisher = $this->createPublisher($type, $config);
 
-            if ($publisher !== null) {
-                $publishers[$name] = $publisher;
+            if ($publisher === null) {
+                continue;
             }
+
+            $publishers[$name] = $publisher;
         }
 
         return new PublisherPool($publishers);
     }
 
     /** @param array<string, mixed> $config */
-    private function createPublisher(string $type, array $config): ?PublisherInterface
+    private function createPublisher(string $type, array $config): PublisherInterface|null
     {
         return match ($type) {
             'x' => $this->createXPublisher(),
@@ -97,7 +103,7 @@ class AppModule extends AbstractAppModule
         };
     }
 
-    private function createXPublisher(): ?XPublisher
+    private function createXPublisher(): XPublisher|null
     {
         $key = getenv('X_API_KEY') ?: '';
         $secret = getenv('X_API_SECRET') ?: '';
@@ -112,7 +118,7 @@ class AppModule extends AbstractAppModule
     }
 
     /** @param array<string, mixed> $config */
-    private function createWordPressPublisher(array $config): ?WordPressPublisher
+    private function createWordPressPublisher(array $config): WordPressPublisher|null
     {
         $url = getenv('WORDPRESS_API_URL') ?: '';
         $user = getenv('WORDPRESS_USER') ?: '';

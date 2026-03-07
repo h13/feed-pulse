@@ -7,6 +7,17 @@ namespace H13\FeedPulse\Reason;
 use H13\FeedPulse\Reason\Entity\PublishResult;
 use Ray\Di\Di\Named;
 
+use function array_map;
+use function date;
+use function file_get_contents;
+use function file_put_contents;
+use function glob;
+use function is_dir;
+use function json_decode;
+use function json_encode;
+use function mkdir;
+use function rsort;
+
 final class HistoryStore
 {
     private readonly string $dir;

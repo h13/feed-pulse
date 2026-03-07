@@ -8,6 +8,28 @@ use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
 
+use function array_keys;
+use function array_map;
+use function array_values;
+use function base64_encode;
+use function bin2hex;
+use function curl_close;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt_array;
+use function date;
+use function hash_hmac;
+use function http_build_query;
+use function implode;
+use function is_string;
+use function json_decode;
+use function json_encode;
+use function ksort;
+use function random_bytes;
+use function rawurlencode;
+use function time;
+
 final class XPublisher implements PublisherInterface
 {
     public function __construct(

@@ -8,6 +8,17 @@ use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
 
+use function base64_encode;
+use function curl_close;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt_array;
+use function date;
+use function is_string;
+use function json_decode;
+use function json_encode;
+
 final class WordPressPublisher implements PublisherInterface
 {
     public function __construct(

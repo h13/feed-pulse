@@ -11,6 +11,11 @@ use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\StateStore;
 use Ray\Di\Di\Inject;
 
+use function array_filter;
+use function array_map;
+use function array_values;
+use function count;
+
 #[Tool(description: 'Crawl feeds, match against interests, and return scored items')]
 class Feed extends ResourceObject
 {

@@ -7,6 +7,9 @@ namespace H13\FeedPulse\Reason;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
+use function glob;
+use function is_array;
+
 final class ChannelConfig
 {
     private readonly string $channelsDir;
