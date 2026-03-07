@@ -62,9 +62,7 @@ final class StateStore
             return ['processedUrls' => [], 'lastRun' => null];
         }
 
-        /**
-         * @var array{processedUrls: list<string>, lastRun: ?string} $state
-         */
+        /** @var array{processedUrls: list<string>, lastRun: ?string} $state */
         $state = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
 
         return $state;

@@ -64,9 +64,7 @@ final class ClaudeHttpClient
             throw new RuntimeException("Claude API error {$httpCode}: {$response}");
         }
 
-        /**
-         * @var array<string, mixed> $result
-         */
+        /** @var array<string, mixed> $result */
         $result = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
 
         return $result;
