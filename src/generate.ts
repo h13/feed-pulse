@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
-import { readFileSync } from "node:fs"
+import { readFileSync, readdirSync } from "node:fs"
 import { resolve } from "node:path"
 import { env } from "./env.js"
 import {
@@ -39,8 +39,29 @@ function buildPromptForChannel(
     .replace(/\{\{topics\}\}/g, item.matchedTopics.join(", "))
 }
 
+function loadVoice(): string {
+  return readFileSync(
+    resolve(import.meta.dirname, "../prompts/voice.md"),
+    "utf-8",
+  )
+}
+
+function loadExamples(): string {
+  const dir = resolve(import.meta.dirname, "../prompts/examples")
+  const files = readdirSync(dir).filter((f) => f.endsWith(".md"))
+  return files
+    .map((f) => readFileSync(resolve(dir, f), "utf-8"))
+    .join("\n\n---\n\n")
+}
+
 function buildSystemPrompt(persona: ChannelPersona): string {
+  const voice = loadVoice()
+  const examples = loadExamples()
+
   const parts = [
+    voice,
+    "",
+    "## Channel Settings",
     `Tone: ${persona.tone}`,
     `Style: ${persona.style}`,
     `Language: ${persona.language}`,
@@ -48,6 +69,11 @@ function buildSystemPrompt(persona: ChannelPersona): string {
   if (persona.max_length) {
     parts.push(`Max length: ${persona.max_length} characters`)
   }
+  parts.push(
+    "",
+    "## Writing Examples (match this voice)",
+    examples,
+  )
   return parts.join("\n")
 }
 
