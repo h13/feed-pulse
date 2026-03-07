@@ -18,7 +18,7 @@ final class ClaudeClient implements LlmClientInterface
 
     /**
      * @param list<array{role: string, content: string|list<array<string, mixed>>}> $messages
-     * @param list<array{name: string, description: string, input_schema: array<string, mixed>}> $tools
+     * @param list<array{name: string, description: string, input_schema: array<string, mixed>}>  $tools
      */
     public function chat(array $messages, array $tools = []): LlmResponse
     {
