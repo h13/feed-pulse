@@ -5,6 +5,7 @@
   "license": "MIT",
   "require": {
     "php": ">=8.4",
+    "bear/fake-json": "^1.0",
     "bear/package": "^1.0",
     "bear/tool-use": "1.x-dev",
     "be-framework/be": "0.x-dev",
@@ -31,7 +32,8 @@
     "sa": "phpstan analyse -c phpstan.neon",
     "pipeline": "php bin/pipeline.php",
     "publish": "php bin/publish.php",
-    "agent": "php bin/agent.php"
+    "agent": "php bin/agent.php",
+    "fake": "php -d BEAR_CONTEXTS=fake-app bin/pipeline.php"
   },
   "repositories": [
     {

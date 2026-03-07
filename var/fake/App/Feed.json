@@ -1,0 +1,26 @@
+{
+  "count": 3,
+  "items": [
+    {
+      "title": "Claude 4.5 Released with Enhanced Reasoning",
+      "link": "https://example.com/claude-4-5",
+      "source": "Hacker News (Best)",
+      "score": 2.0,
+      "matchedTopics": ["AI & LLM", "Software Engineering"]
+    },
+    {
+      "title": "Rust 2024 Edition: What's New",
+      "link": "https://example.com/rust-2024",
+      "source": "TechCrunch",
+      "score": 0.8,
+      "matchedTopics": ["Software Engineering"]
+    },
+    {
+      "title": "BEAR.Sunday: Resource-Oriented Framework for PHP",
+      "link": "https://example.com/bear-sunday",
+      "source": "Hacker News (Best)",
+      "score": 1.8,
+      "matchedTopics": ["AI & LLM", "Software Engineering"]
+    }
+  ]
+}

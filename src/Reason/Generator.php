@@ -7,52 +7,32 @@ namespace H13\FeedPulse\Reason;
 use H13\FeedPulse\Contract\LlmInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
-use Symfony\Component\Yaml\Yaml;
+use Ray\Di\Di\Named;
 
 final class Generator
 {
     private readonly string $promptsDir;
-    private readonly string $channelsDir;
 
     public function __construct(
         private readonly LlmInterface $llm,
+        #[Named('app_dir')]
+        string $appDir,
     ) {
-        $this->promptsDir = dirname(__DIR__, 2) . '/prompts';
-        $this->channelsDir = dirname(__DIR__, 2) . '/config/channels';
+        $this->promptsDir = $appDir . '/prompts';
     }
 
     /**
-     * @param list<ScoredItem> $items
-     * @return list<Draft>
+     * @param array<string, mixed> $channelConfig
      */
-    public function generate(array $items): array
+    public function generate(ScoredItem $item, array $channelConfig): Draft
     {
-        $channels = $this->loadEnabledChannels();
-        if ($channels === []) {
-            return [];
-        }
+        $persona = $channelConfig['persona'] ?? [];
+        $type = $channelConfig['type'] ?? 'x';
+        $channelName = $channelConfig['name'] ?? 'unknown';
 
-        $drafts = [];
-        foreach ($channels as $channel) {
-            $limit = $channel['channel']['publish']['max_per_day'] ?? 5;
-            $targets = array_slice($items, 0, $limit);
-
-            foreach ($targets as $item) {
-                $drafts[] = $this->generateForChannel($channel, $item);
-            }
-        }
-
-        return $drafts;
-    }
-
-    /** @param array<string, mixed> $channel */
-    private function generateForChannel(array $channel, ScoredItem $item): Draft
-    {
-        $systemPrompt = $this->buildSystemPrompt($channel['channel']['persona'] ?? []);
-        $userPrompt = $this->buildUserPrompt($channel['channel']['type'] ?? 'x', $item);
-
+        $systemPrompt = $this->buildSystemPrompt($persona);
+        $userPrompt = $this->buildUserPrompt($type, $item);
         $content = $this->llm->generate($systemPrompt, $userPrompt);
-        $channelName = $channel['channel']['name'] ?? 'unknown';
 
         return new Draft(
             id: $this->toDraftId($channelName, $item),
@@ -126,21 +106,5 @@ final class Generator
         $slug = substr($slug, 0, 60);
 
         return "{$channel}-{$slug}";
-    }
-
-    /** @return list<array<string, mixed>> */
-    private function loadEnabledChannels(): array
-    {
-        $files = glob("{$this->channelsDir}/*.yaml") ?: [];
-
-        $channels = array_map(
-            fn (string $f) => Yaml::parseFile($f),
-            $files,
-        );
-
-        return array_values(array_filter(
-            $channels,
-            fn (mixed $c) => is_array($c) && ($c['channel']['enabled'] ?? false),
-        ));
     }
 }

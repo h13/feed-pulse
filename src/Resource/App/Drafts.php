@@ -6,26 +6,33 @@ namespace H13\FeedPulse\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\ToolUse\Attribute\Tool;
+use H13\FeedPulse\Contract\MatcherInterface;
 use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\DraftStore;
 use H13\FeedPulse\Reason\Generator;
-use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Reason\StateStore;
+use Ray\Di\Di\Named;
 use Ray\Di\Di\Inject;
+use Symfony\Component\Yaml\Yaml;
 
 #[Tool(description: 'List or generate content drafts from matched feed items')]
 class Drafts extends ResourceObject
 {
+    private readonly string $channelsDir;
+
     #[Inject]
     public function __construct(
         private readonly SourceInterface $source,
-        private readonly Matcher $matcher,
+        private readonly MatcherInterface $matcher,
         private readonly Generator $generator,
         private readonly DraftStore $draftStore,
         private readonly StateStore $stateStore,
         private readonly NotifierInterface $notifier,
+        #[Named('app_dir')]
+        string $appDir,
     ) {
+        $this->channelsDir = $appDir . '/config/channels';
     }
 
     /** List all pending drafts */
@@ -68,7 +75,17 @@ class Drafts extends ResourceObject
             return $this;
         }
 
-        $drafts = $this->generator->generate($newItems);
+        $channels = $this->loadEnabledChannels();
+        $drafts = [];
+
+        foreach ($channels as $channelConfig) {
+            $limit = $channelConfig['publish']['max_per_day'] ?? 5;
+            $targets = array_slice($newItems, 0, $limit);
+
+            foreach ($targets as $item) {
+                $drafts[] = $this->generator->generate($item, $channelConfig);
+            }
+        }
 
         foreach ($drafts as $draft) {
             $this->draftStore->save($draft);
@@ -93,5 +110,21 @@ class Drafts extends ResourceObject
         ];
 
         return $this;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function loadEnabledChannels(): array
+    {
+        $files = glob("{$this->channelsDir}/*.yaml") ?: [];
+
+        $configs = [];
+        foreach ($files as $file) {
+            $data = Yaml::parseFile($file);
+            if (is_array($data) && ($data['channel']['enabled'] ?? false)) {
+                $configs[] = $data['channel'];
+            }
+        }
+
+        return $configs;
     }
 }

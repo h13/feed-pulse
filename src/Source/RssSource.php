@@ -7,15 +7,18 @@ namespace H13\FeedPulse\Source;
 use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\Entity\FeedItem;
 use Laminas\Feed\Reader\Reader;
+use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
 final class RssSource implements SourceInterface
 {
     private readonly string $configPath;
 
-    public function __construct()
-    {
-        $this->configPath = dirname(__DIR__, 2) . '/config/sources.yaml';
+    public function __construct(
+        #[Named('app_dir')]
+        string $appDir,
+    ) {
+        $this->configPath = $appDir . '/config/sources.yaml';
     }
 
     /** @return list<FeedItem> */

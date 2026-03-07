@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace H13\FeedPulse\Reason;
 
 use H13\FeedPulse\Reason\Entity\PublishResult;
+use Ray\Di\Di\Named;
 
 final class HistoryStore
 {
     private readonly string $dir;
 
-    public function __construct()
-    {
-        $this->dir = dirname(__DIR__, 2) . '/state/history';
+    public function __construct(
+        #[Named('app_dir')]
+        string $appDir,
+    ) {
+        $this->dir = $appDir . '/state/history';
     }
 
-    /**
-     * @param list<PublishResult> $results
-     */
+    /** @param list<PublishResult> $results */
     public function save(array $results): void
     {
         if (! is_dir($this->dir)) {
@@ -42,9 +43,7 @@ final class HistoryStore
         );
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     public function loadAll(): array
     {
         if (! is_dir($this->dir)) {

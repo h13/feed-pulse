@@ -7,18 +7,13 @@ namespace H13\FeedPulse\Publisher;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
-use Ray\Di\Di\Named;
 
 final class XPublisher implements PublisherInterface
 {
     public function __construct(
-        #[Named('x_api_key')]
         private readonly string $apiKey,
-        #[Named('x_api_secret')]
         private readonly string $apiSecret,
-        #[Named('x_access_token')]
         private readonly string $accessToken,
-        #[Named('x_access_secret')]
         private readonly string $accessSecret,
     ) {
     }

@@ -1,0 +1,19 @@
+{
+  "count": 2,
+  "drafts": [
+    {
+      "id": "x-claude-4-5-released-with-enhanced-reasoning",
+      "channel": "x",
+      "title": "Claude 4.5 Released with Enhanced Reasoning",
+      "content": "Claude 4.5がリリース。推論能力が大幅に向上し、コーディングタスクでの精度が飛躍的に改善。BEAR.Sundayとの相性も抜群 🚀",
+      "createdAt": "2026-03-08T09:00:00+09:00"
+    },
+    {
+      "id": "x-bear-sunday-resource-oriented-framework",
+      "channel": "x",
+      "title": "BEAR.Sunday: Resource-Oriented Framework for PHP",
+      "content": "BEAR.Sundayのリソース指向アーキテクチャ、ALPSによるセマンティック定義が本当に洗練されている。PHPの可能性を再定義するフレームワーク。",
+      "createdAt": "2026-03-08T09:01:00+09:00"
+    }
+  ]
+}

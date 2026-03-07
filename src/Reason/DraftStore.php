@@ -7,14 +7,17 @@ namespace H13\FeedPulse\Reason;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\FeedItem;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
+use Ray\Di\Di\Named;
 
 final class DraftStore
 {
     private readonly string $dir;
 
-    public function __construct()
-    {
-        $this->dir = dirname(__DIR__, 2) . '/state/drafts';
+    public function __construct(
+        #[Named('app_dir')]
+        string $appDir,
+    ) {
+        $this->dir = $appDir . '/state/drafts';
     }
 
     public function save(Draft $draft): void
@@ -48,9 +51,7 @@ final class DraftStore
         );
     }
 
-    /**
-     * @return list<Draft>
-     */
+    /** @return list<Draft> */
     public function loadAll(): array
     {
         if (! is_dir($this->dir)) {

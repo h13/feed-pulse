@@ -7,18 +7,13 @@ namespace H13\FeedPulse\Publisher;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
-use Ray\Di\Di\Named;
 
 final class WordPressPublisher implements PublisherInterface
 {
     public function __construct(
-        #[Named('wp_api_url')]
         private readonly string $apiUrl,
-        #[Named('wp_user')]
         private readonly string $user,
-        #[Named('wp_password')]
         private readonly string $appPassword,
-        #[Named('wp_post_status')]
         private readonly string $postStatus = 'draft',
     ) {
     }

@@ -1,0 +1,18 @@
+{
+  "published": 2,
+  "failed": 0,
+  "results": [
+    {
+      "channel": "x",
+      "title": "Claude 4.5 Released with Enhanced Reasoning",
+      "url": "https://x.com/i/status/1234567890",
+      "error": null
+    },
+    {
+      "channel": "x",
+      "title": "BEAR.Sunday: Resource-Oriented Framework for PHP",
+      "url": "https://x.com/i/status/1234567891",
+      "error": null
+    }
+  ]
+}

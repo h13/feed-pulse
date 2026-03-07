@@ -9,6 +9,7 @@ use BEAR\Package\PackageModule;
 use BEAR\ToolUse\LlmClientInterface;
 use BEAR\ToolUse\ToolUseModule;
 use H13\FeedPulse\Contract\LlmInterface;
+use H13\FeedPulse\Contract\MatcherInterface;
 use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Contract\SourceInterface;
@@ -19,6 +20,7 @@ use H13\FeedPulse\Notifier\SlackNotifier;
 use H13\FeedPulse\Publisher\PublisherPool;
 use H13\FeedPulse\Publisher\WordPressPublisher;
 use H13\FeedPulse\Publisher\XPublisher;
+use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
 use Symfony\Component\Yaml\Yaml;
@@ -32,20 +34,25 @@ class AppModule extends AbstractAppModule
 
         (new EnvJson())->load($this->appDir);
 
+        // Shared
+        $this->bind()->annotatedWith('app_dir')->toInstance($this->appDir);
         $this->bind()->annotatedWith('anthropic_api_key')->toInstance(getenv('ANTHROPIC_API_KEY') ?: '');
         $this->bind()->annotatedWith('repo_url')->toInstance('https://github.com/h13/feed-pulse');
 
-        // Source: where content comes from
+        // Source
         $this->bind(SourceInterface::class)->to(RssSource::class);
 
-        // LLM: what generates content
+        // Matcher
+        $this->bind(MatcherInterface::class)->to(Matcher::class);
+
+        // LLM
         $this->bind(LlmInterface::class)->to(ClaudeLlm::class);
         $this->bind(LlmClientInterface::class)->to(ClaudeClient::class);
 
-        // Notifier: where notifications go
+        // Notifier
         $this->bindNotifier();
 
-        // Publisher: where content gets published
+        // Publisher
         $this->bind(PublisherPool::class)->toInstance($this->buildPublisherPool());
     }
 

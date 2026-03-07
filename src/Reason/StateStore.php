@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace H13\FeedPulse\Reason;
 
+use Ray\Di\Di\Named;
+
 final class StateStore
 {
     private readonly string $path;
 
-    public function __construct()
-    {
-        $this->path = dirname(__DIR__, 2) . '/state/processed.json';
+    public function __construct(
+        #[Named('app_dir')]
+        string $appDir,
+    ) {
+        $this->path = $appDir . '/state/processed.json';
     }
 
     public function isProcessed(string $url): bool
@@ -20,9 +24,7 @@ final class StateStore
         return in_array($url, $state['processedUrls'], true);
     }
 
-    /**
-     * @param list<string> $urls
-     */
+    /** @param list<string> $urls */
     public function markProcessed(array $urls): void
     {
         $state = $this->load();
@@ -31,9 +33,7 @@ final class StateStore
         $this->save($state);
     }
 
-    /**
-     * @return array{processedUrls: list<string>, lastRun: ?string}
-     */
+    /** @return array{processedUrls: list<string>, lastRun: ?string} */
     private function load(): array
     {
         if (! file_exists($this->path)) {
@@ -49,9 +49,7 @@ final class StateStore
         return json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    /**
-     * @param array<string, mixed> $state
-     */
+    /** @param array<string, mixed> $state */
     private function save(array $state): void
     {
         $dir = dirname($this->path);

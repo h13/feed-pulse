@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace H13\FeedPulse\Reason;
 
+use H13\FeedPulse\Contract\MatcherInterface;
 use H13\FeedPulse\Reason\Entity\FeedItem;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
+use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
-final class Matcher
+final class Matcher implements MatcherInterface
 {
     private readonly string $configPath;
 
-    public function __construct()
-    {
-        $this->configPath = dirname(__DIR__, 2) . '/config/interests.yaml';
+    public function __construct(
+        #[Named('app_dir')]
+        string $appDir,
+    ) {
+        $this->configPath = $appDir . '/config/interests.yaml';
     }
 
     /**
