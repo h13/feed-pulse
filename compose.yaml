@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: prod
     volumes:
       - .:/app
       - vendor:/app/vendor
@@ -9,7 +11,9 @@ services:
     working_dir: /app
 
   pipeline:
-    build: .
+    build:
+      context: .
+      target: prod
     volumes:
       - .:/app
       - vendor:/app/vendor
@@ -18,7 +22,9 @@ services:
     command: ["bin/pipeline.php"]
 
   publish:
-    build: .
+    build:
+      context: .
+      target: prod
     volumes:
       - .:/app
       - vendor:/app/vendor
@@ -27,7 +33,9 @@ services:
     command: ["bin/publish.php"]
 
   agent:
-    build: .
+    build:
+      context: .
+      target: prod
     volumes:
       - .:/app
       - vendor:/app/vendor
@@ -35,5 +43,16 @@ services:
       - env.json
     command: ["bin/agent.php"]
 
+  qa:
+    build:
+      context: .
+      target: qa
+    volumes:
+      - .:/app
+      - vendor-dev:/app/vendor
+    entrypoint: ["composer"]
+    command: ["tests"]
+
 volumes:
   vendor:
+  vendor-dev:

@@ -11,8 +11,31 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Build Docker image
-        run: docker build -t feed-pulse:ci .
+      - name: Build production image
+        run: docker build --target prod -t feed-pulse:ci .
 
       - name: Verify image runs
         run: docker run --rm feed-pulse:ci -v
+
+  qa:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build QA image
+        run: docker build --target qa -t feed-pulse:qa .
+
+      - name: Coding standards
+        run: docker run --rm feed-pulse:qa vendor/bin/phpcs
+
+      - name: PHPStan
+        run: docker run --rm feed-pulse:qa vendor/bin/phpstan analyse --no-progress -c phpstan.neon
+
+      - name: Psalm
+        run: docker run --rm feed-pulse:qa vendor/bin/psalm --no-progress
+
+      - name: PHPMD
+        run: docker run --rm feed-pulse:qa vendor/bin/phpmd src text ./phpmd.xml
+
+      - name: PHPUnit
+        run: docker run --rm feed-pulse:qa vendor/bin/phpunit
