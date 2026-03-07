@@ -8,3 +8,5 @@ env.json
 var/log/
 var/tmp/
 .phpunit.result.cache
+.phpcs-cache
+build/

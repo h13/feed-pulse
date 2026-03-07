@@ -14,8 +14,7 @@
   },
   "require-dev": {
     "bear/fake-json": "^0.1",
-    "phpstan/phpstan": "^2.0",
-    "phpunit/phpunit": "^11.0"
+    "bear/qatools": "^1.13"
   },
   "autoload": {
     "psr-4": {
@@ -29,7 +28,20 @@
   },
   "scripts": {
     "test": "phpunit",
-    "sa": "phpstan analyse -c phpstan.neon",
+    "tests": [
+      "@cs",
+      "@sa",
+      "@test"
+    ],
+    "sa": [
+      "phpstan analyse --no-progress -c phpstan.neon",
+      "psalm --no-progress",
+      "phpmd src text ./phpmd.xml"
+    ],
+    "cs": "phpcs",
+    "cs-fix": "phpcbf",
+    "coverage": "php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",
+    "metrics": "phpmetrics --report-html=build/metrics --exclude=Exception src",
     "pipeline": "php bin/pipeline.php",
     "publish": "php bin/publish.php",
     "agent": "php bin/agent.php",
@@ -43,11 +55,18 @@
     {
       "type": "vcs",
       "url": "https://github.com/bearsunday/BEAR.FakeJson"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/bearsunday/BEAR.QATools"
     }
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
