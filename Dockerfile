@@ -12,7 +12,7 @@ COPY --from=composer:2.8.4@sha256:72b9e4b2038558f7256e7f925495aa791c0ee764e1d351
 
 WORKDIR /app
 
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock* ./
 RUN composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
 
 COPY . .
