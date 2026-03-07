@@ -1,5 +1,11 @@
 # feed-pulse
 
+[![CI](https://github.com/h13/feed-pulse/actions/workflows/ci.yml/badge.svg)](https://github.com/h13/feed-pulse/actions/workflows/ci.yml)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![BEAR.Sunday](https://img.shields.io/badge/BEAR.Sunday-Framework-orange)](https://bearsunday.github.io/)
+[![ALPS](https://img.shields.io/badge/ALPS-Profile-blue)](https://alps-asd.github.io/spec/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 Automated content pipeline that crawls RSS feeds, matches
 them against your interests, generates content via Claude
 API, and publishes to configured channels.
@@ -36,15 +42,41 @@ enabling an LLM agent to autonomously operate the
 pipeline:
 
 ```bash
-docker compose run agent \
+docker compose run --rm app php bin/agent.php \
   "Check for new feed items and generate drafts"
 ```
 
 ## Setup
 
+### Requirements
+
+- PHP 8.4+ with curl and xml extensions
+- Composer 2.x
+
+### Local Development
+
 ```bash
+git clone https://github.com/h13/feed-pulse.git
+cd feed-pulse
+
+# Configure environment
 cp env.dist.json env.json
 # Edit env.json with your API keys
+
+# Install dependencies
+composer install
+```
+
+### Docker (alternative)
+
+```bash
+# Build once
+docker compose build
+
+# Run any command
+docker compose run --rm app composer install
+docker compose run --rm app php bin/pipeline.php
+docker compose run --rm app composer tests
 ```
 
 ### Environment Variables
@@ -63,21 +95,36 @@ cp env.dist.json env.json
 
 ## Usage
 
-### Docker (recommended)
-
 ```bash
-# Generate drafts
-docker compose run pipeline
+# Run full pipeline (crawl → match → generate drafts)
+composer pipeline
 
 # Publish approved drafts
-docker compose run publish
+composer publish
 
 # Agent mode
-docker compose run agent \
-  "Summarize today's top AI news"
+composer agent
+
+# Run with fake context (no API calls)
+composer fake
 ```
 
-### Configuration
+## QA
+
+```bash
+# All checks (cs + sa + test)
+composer tests
+
+# Individual
+composer cs        # Coding standards (phpcs)
+composer cs-fix    # Auto-fix (phpcbf)
+composer sa        # Static analysis (phpstan + psalm + phpmd)
+composer test      # PHPUnit
+composer coverage  # Coverage report
+composer metrics   # PHPMetrics
+```
+
+## Configuration
 
 **RSS Sources** — `config/sources.yaml`
 
@@ -112,22 +159,16 @@ Writing style definition used in content generation.
 Add past posts to `prompts/examples/` as few-shot
 references.
 
-## Workflows
-
-| Workflow | Trigger                 | Description                  |
-| -------- | ----------------------- | ---------------------------- |
-| CI       | push, PR                | Build Docker image           |
-| Generate | Daily 09:00 JST, manual | Crawl → generate → notify    |
-| Publish  | Manual                  | Publish → history PR (merge) |
-
 ## Tech Stack
 
-- **PHP 8.4** on Alpine Linux (Docker, SHA-pinned)
+- **PHP 8.4** — Runtime
 - **BEAR.Sunday** — Resource-oriented framework
 - **Be Framework** — Ontological programming
 - **ALPS** — Application-Level Profile Semantics
 - **BEAR.ToolUse** — LLM agent with human-in-the-loop
+- **BEAR.QATools** — PHPStan (max), Psalm (level 1), PHPCS, PHPMD, PHPUnit
 - **koriym/env-json** — JSON Schema env validation
+- **Claude API** (Haiku 4.5) — Content generation
 
 ## License
 
