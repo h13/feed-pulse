@@ -1,0 +1,27 @@
+# Your interest topics for content matching
+interests:
+  - topic: AI & LLM
+    keywords:
+      - artificial intelligence
+      - large language model
+      - LLM
+      - Claude
+      - GPT
+      - machine learning
+    weight: 1.0
+
+  - topic: Software Engineering
+    keywords:
+      - TypeScript
+      - Rust
+      - developer tools
+      - DevOps
+      - CI/CD
+    weight: 0.8
+
+  # Add more topics
+  # - topic: Business
+  #   keywords:
+  #     - startup
+  #     - SaaS
+  #   weight: 0.6

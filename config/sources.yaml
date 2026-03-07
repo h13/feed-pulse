@@ -1,0 +1,14 @@
+# RSS/Atom feeds to crawl
+sources:
+  - name: Hacker News (Best)
+    url: https://hnrss.org/best
+    category: tech
+
+  - name: TechCrunch
+    url: https://techcrunch.com/feed/
+    category: tech
+
+  # Add more sources here
+  # - name: Example Blog
+  #   url: https://example.com/feed.xml
+  #   category: business

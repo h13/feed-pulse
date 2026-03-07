@@ -1,0 +1,18 @@
+# Blog channel configuration
+channel:
+  name: blog
+  enabled: false
+  type: wordpress
+
+  persona:
+    tone: professional
+    style: informative
+    language: ja
+
+  # WordPress REST API settings
+  # api_url: https://example.com/wp-json/wp/v2
+  # auth via environment: WORDPRESS_USER, WORDPRESS_APP_PASSWORD
+
+  publish:
+    status: draft # draft | publish
+    max_per_day: 2

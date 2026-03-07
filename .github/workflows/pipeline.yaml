@@ -1,0 +1,32 @@
+name: Feed Pulse Pipeline
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at 09:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+
+      - run: corepack enable pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm run pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit state changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add state/
+          git diff --cached --quiet || git commit -m "chore: update pipeline state"
+          git push

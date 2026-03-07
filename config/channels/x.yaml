@@ -1,0 +1,16 @@
+# X (Twitter) channel configuration
+channel:
+  name: x
+  enabled: false
+  type: x
+
+  persona:
+    tone: casual
+    style: concise
+    language: ja
+    max_length: 280
+
+  # Auth via environment: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
+
+  publish:
+    max_per_day: 5
