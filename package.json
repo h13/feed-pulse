@@ -7,12 +7,14 @@
     "node": ">=20"
   },
   "scripts": {
-    "pipeline": "tsx src/pipeline.ts",
+    "pipeline": "node --env-file=.env --import=tsx src/pipeline.ts",
     "crawl": "tsx src/crawl.ts",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "yaml": "2.8.2"
+    "@anthropic-ai/sdk": "0.78.0",
+    "yaml": "2.8.2",
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@types/node": "25.3.5",

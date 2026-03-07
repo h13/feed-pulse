@@ -1,5 +1,6 @@
 import { crawlAll } from "./crawl.js"
 import { matchItems } from "./match.js"
+import { generateAll } from "./generate.js"
 import { loadState, saveState, isProcessed, markProcessed } from "./state.js"
 
 async function main() {
@@ -20,7 +21,6 @@ async function main() {
     return
   }
 
-  // Phase 1: just output matched items
   for (const item of newItems) {
     console.log(`\n--- [${item.score.toFixed(1)}] ${item.title}`)
     console.log(`    Topics: ${item.matchedTopics.join(", ")}`)
@@ -28,7 +28,15 @@ async function main() {
     console.log(`    Link:   ${item.link}`)
   }
 
-  // TODO Phase 2: generate content via Claude API
+  // Phase 2: generate content via Claude API
+  const generated = await generateAll(newItems)
+
+  for (const content of generated) {
+    console.log(`\n=== Generated [${content.channel}] ===`)
+    console.log(content.content)
+    console.log("===")
+  }
+
   // TODO Phase 3: publish to channels
 
   const updatedState = markProcessed(

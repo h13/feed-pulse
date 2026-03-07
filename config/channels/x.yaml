@@ -1,7 +1,7 @@
 # X (Twitter) channel configuration
 channel:
   name: x
-  enabled: false
+  enabled: true
   type: x
 
   persona:
