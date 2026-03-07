@@ -7,6 +7,7 @@ namespace H13\FeedPulse\Notifier;
 use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use Ray\Di\Di\Named;
+use RuntimeException;
 
 use function count;
 use function curl_close;
@@ -18,6 +19,13 @@ use function implode;
 use function json_encode;
 use function mb_strlen;
 use function mb_substr;
+
+use const CURLINFO_HTTP_CODE;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_POST;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_RETURNTRANSFER;
+use const JSON_THROW_ON_ERROR;
 
 final class SlackNotifier implements NotifierInterface
 {
@@ -75,7 +83,7 @@ final class SlackNotifier implements NotifierInterface
     {
         $ch = curl_init($this->webhookUrl);
         if ($ch === false) {
-            throw new \RuntimeException('Failed to initialize curl');
+            throw new RuntimeException('Failed to initialize curl');
         }
 
         curl_setopt_array($ch, [
@@ -90,7 +98,7 @@ final class SlackNotifier implements NotifierInterface
         curl_close($ch);
 
         if ($httpCode >= 400) {
-            throw new \RuntimeException("Slack webhook error {$httpCode}: {$response}");
+            throw new RuntimeException("Slack webhook error {$httpCode}: {$response}");
         }
     }
 }

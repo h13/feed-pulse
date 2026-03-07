@@ -30,6 +30,7 @@ final class Matcher implements MatcherInterface
 
     /**
      * @param list<FeedItem> $items
+     *
      * @return list<ScoredItem>
      */
     public function match(array $items, float $threshold = 0.5): array
@@ -43,17 +44,15 @@ final class Matcher implements MatcherInterface
 
         $filtered = array_filter(
             $scored,
-            fn (ScoredItem $item) => $item->score >= $threshold,
+            static fn (ScoredItem $item) => $item->score >= $threshold,
         );
 
-        usort($filtered, fn (ScoredItem $a, ScoredItem $b) => $b->score <=> $a->score);
+        usort($filtered, static fn (ScoredItem $a, ScoredItem $b) => $b->score <=> $a->score);
 
         return array_values($filtered);
     }
 
-    /**
-     * @param list<array{topic: string, keywords: list<string>, weight: float}> $interests
-     */
+    /** @param list<array{topic: string, keywords: list<string>, weight: float}> $interests */
     private function scoreItem(FeedItem $item, array $interests): ScoredItem
     {
         $text = strtolower("{$item->title} {$item->description}");
@@ -77,9 +76,7 @@ final class Matcher implements MatcherInterface
         );
     }
 
-    /**
-     * @return list<array{topic: string, keywords: list<string>, weight: float}>
-     */
+    /** @return list<array{topic: string, keywords: list<string>, weight: float}> */
     private function loadInterests(): array
     {
         $config = Yaml::parseFile($this->configPath);

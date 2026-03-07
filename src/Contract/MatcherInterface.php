@@ -11,6 +11,7 @@ interface MatcherInterface
 {
     /**
      * @param list<FeedItem> $items
+     *
      * @return list<ScoredItem>
      */
     public function match(array $items, float $threshold = 0.5): array;

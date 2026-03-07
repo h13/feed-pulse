@@ -12,7 +12,7 @@ use function implode;
 
 final class ClaudeLlm implements LlmInterface
 {
-    private const MODEL = 'claude-haiku-4-5-20251001';
+    private const string MODEL = 'claude-haiku-4-5-20251001';
 
     public function __construct(
         private readonly ClaudeHttpClient $http,
@@ -30,8 +30,8 @@ final class ClaudeLlm implements LlmInterface
         ]);
 
         $texts = array_map(
-            fn (array $block) => $block['text'] ?? '',
-            array_filter($data['content'], fn (array $b) => $b['type'] === 'text'),
+            static fn (array $block) => $block['text'] ?? '',
+            array_filter($data['content'], static fn (array $b) => $b['type'] === 'text'),
         );
 
         return implode("\n", $texts);

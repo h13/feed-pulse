@@ -34,9 +34,7 @@ final class Generator
         $this->promptsDir = $appDir . '/prompts';
     }
 
-    /**
-     * @param array<string, mixed> $channelConfig
-     */
+    /** @param array<string, mixed> $channelConfig */
     public function generate(ScoredItem $item, array $channelConfig): Draft
     {
         $persona = $channelConfig['persona'] ?? [];
@@ -109,7 +107,7 @@ final class Generator
 
         return implode(
             "\n\n---\n\n",
-            array_map(fn (string $f) => file_get_contents($f) ?: '', $files),
+            array_map(static fn (string $f) => file_get_contents($f) ?: '', $files),
         );
     }
 

@@ -9,7 +9,7 @@ use BEAR\ToolUse\LlmResponse;
 
 final class ClaudeClient implements LlmClientInterface
 {
-    private const MODEL = 'claude-haiku-4-5-20251001';
+    private const string MODEL = 'claude-haiku-4-5-20251001';
 
     public function __construct(
         private readonly ClaudeHttpClient $http,

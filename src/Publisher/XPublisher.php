@@ -7,6 +7,8 @@ namespace H13\FeedPulse\Publisher;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
+use RuntimeException;
+use Throwable;
 
 use function array_keys;
 use function array_map;
@@ -30,6 +32,14 @@ use function random_bytes;
 use function rawurlencode;
 use function time;
 
+use const CURLINFO_HTTP_CODE;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_POST;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_RETURNTRANSFER;
+use const JSON_THROW_ON_ERROR;
+use const PHP_QUERY_RFC3986;
+
 final class XPublisher implements PublisherInterface
 {
     public function __construct(
@@ -52,7 +62,7 @@ final class XPublisher implements PublisherInterface
                 error: null,
                 publishedAt: date('c'),
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return new PublishResult(
                 channel: $draft->channel,
                 title: $draft->item->feed->title,
@@ -71,7 +81,7 @@ final class XPublisher implements PublisherInterface
 
         $ch = curl_init($url);
         if ($ch === false) {
-            throw new \RuntimeException('Failed to initialize curl');
+            throw new RuntimeException('Failed to initialize curl');
         }
 
         curl_setopt_array($ch, [
@@ -89,7 +99,7 @@ final class XPublisher implements PublisherInterface
         curl_close($ch);
 
         if (! is_string($response) || $httpCode >= 400) {
-            throw new \RuntimeException("X API error {$httpCode}: {$response}");
+            throw new RuntimeException("X API error {$httpCode}: {$response}");
         }
 
         /** @var array{data: array{id: string}} $data */
@@ -122,7 +132,7 @@ final class XPublisher implements PublisherInterface
         ksort($params);
 
         $header = implode(', ', array_map(
-            fn (string $k, string $v) => rawurlencode($k) . '="' . rawurlencode($v) . '"',
+            static fn (string $k, string $v) => rawurlencode($k) . '="' . rawurlencode($v) . '"',
             array_keys($params),
             array_values($params),
         ));

@@ -18,6 +18,11 @@ use function json_encode;
 use function mkdir;
 use function rsort;
 
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+
 final class HistoryStore
 {
     private readonly string $dir;
@@ -38,7 +43,7 @@ final class HistoryStore
 
         $data = [
             'publishedAt' => date('c'),
-            'results' => array_map(fn (PublishResult $r) => [
+            'results' => array_map(static fn (PublishResult $r) => [
                 'channel' => $r->channel,
                 'title' => $r->title,
                 'url' => $r->url,
@@ -70,6 +75,7 @@ final class HistoryStore
             if ($raw === false) {
                 continue;
             }
+
             $history[] = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
         }
 

@@ -9,6 +9,7 @@ use H13\FeedPulse\Reason\Entity\FeedItem;
 use Laminas\Feed\Reader\Reader;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
 use function error_log;
 use function strip_tags;
@@ -40,14 +41,16 @@ final class RssSource implements SourceInterface
 
     /**
      * @param array{name: string, url: string, category: string} $source
+     *
      * @return list<FeedItem>
      */
     private function fetchFeed(array $source): array
     {
         try {
             $feed = Reader::import($source['url']);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             error_log("Failed to fetch {$source['name']}: {$e->getMessage()}");
+
             return [];
         }
 

@@ -43,7 +43,7 @@ class Drafts extends ResourceObject
 
         $this->body = [
             'count' => count($drafts),
-            'drafts' => array_map(fn ($d) => [
+            'drafts' => array_map(static fn ($d) => [
                 'id' => $d->id,
                 'channel' => $d->channel,
                 'title' => $d->item->feed->title,
@@ -73,6 +73,7 @@ class Drafts extends ResourceObject
         if ($newItems === []) {
             $this->code = 204;
             $this->body = ['message' => 'No new items to process'];
+
             return $this;
         }
 
@@ -93,7 +94,7 @@ class Drafts extends ResourceObject
         }
 
         $this->stateStore->markProcessed(
-            array_map(fn ($item) => $item->feed->link, $newItems),
+            array_map(static fn ($item) => $item->feed->link, $newItems),
         );
 
         if ($notify) {
@@ -103,7 +104,7 @@ class Drafts extends ResourceObject
         $this->code = 201;
         $this->body = [
             'count' => count($drafts),
-            'drafts' => array_map(fn ($d) => [
+            'drafts' => array_map(static fn ($d) => [
                 'id' => $d->id,
                 'channel' => $d->channel,
                 'title' => $d->item->feed->title,

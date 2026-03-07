@@ -19,6 +19,10 @@ use function json_decode;
 use function json_encode;
 use function mkdir;
 
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+
 final class StateStore
 {
     private readonly string $path;

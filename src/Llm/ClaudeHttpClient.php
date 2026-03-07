@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace H13\FeedPulse\Llm;
 
 use Ray\Di\Di\Named;
+use RuntimeException;
 
 use function curl_close;
 use function curl_exec;
@@ -15,9 +16,16 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 
+use const CURLINFO_HTTP_CODE;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_POST;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_RETURNTRANSFER;
+use const JSON_THROW_ON_ERROR;
+
 final class ClaudeHttpClient
 {
-    private const API_URL = 'https://api.anthropic.com/v1/messages';
+    private const string API_URL = 'https://api.anthropic.com/v1/messages';
 
     public function __construct(
         #[Named('anthropic_api_key')]
@@ -34,7 +42,7 @@ final class ClaudeHttpClient
     {
         $ch = curl_init(self::API_URL);
         if ($ch === false) {
-            throw new \RuntimeException('Failed to initialize curl');
+            throw new RuntimeException('Failed to initialize curl');
         }
 
         curl_setopt_array($ch, [
@@ -53,7 +61,7 @@ final class ClaudeHttpClient
         curl_close($ch);
 
         if (! is_string($response) || $httpCode !== 200) {
-            throw new \RuntimeException("Claude API error {$httpCode}: {$response}");
+            throw new RuntimeException("Claude API error {$httpCode}: {$response}");
         }
 
         /** @var array<string, mixed> */

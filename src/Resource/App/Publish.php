@@ -37,12 +37,13 @@ class Publish extends ResourceObject
         $drafts = $this->draftStore->loadAll();
 
         if ($draftId !== null) {
-            $drafts = array_values(array_filter($drafts, fn ($d) => $d->id === $draftId));
+            $drafts = array_values(array_filter($drafts, static fn ($d) => $d->id === $draftId));
         }
 
         if ($drafts === []) {
             $this->code = 204;
             $this->body = ['message' => 'No drafts to publish'];
+
             return $this;
         }
 
@@ -58,13 +59,13 @@ class Publish extends ResourceObject
 
         $this->historyStore->save($results);
 
-        $failures = array_filter($results, fn ($r) => ! $r->isSuccess());
+        $failures = array_filter($results, static fn ($r) => ! $r->isSuccess());
 
         $this->code = $failures !== [] ? 207 : 200;
         $this->body = [
             'published' => count($results) - count($failures),
             'failed' => count($failures),
-            'results' => array_map(fn ($r) => [
+            'results' => array_map(static fn ($r) => [
                 'channel' => $r->channel,
                 'title' => $r->title,
                 'url' => $r->url,

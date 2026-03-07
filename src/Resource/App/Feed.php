@@ -45,7 +45,7 @@ class Feed extends ResourceObject
 
         $this->body = [
             'count' => count($matched),
-            'items' => array_map(fn ($item) => [
+            'items' => array_map(static fn ($item) => [
                 'title' => $item->feed->title,
                 'link' => $item->feed->link,
                 'source' => $item->feed->source,

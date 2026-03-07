@@ -21,9 +21,7 @@ final class ChannelConfig
         $this->channelsDir = $appDir . '/config/channels';
     }
 
-    /**
-     * @return list<array<string, mixed>> Enabled channel configs (the 'channel' key contents)
-     */
+    /** @return list<array<string, mixed>> Enabled channel configs (the 'channel' key contents) */
     public function loadEnabled(): array
     {
         $files = glob("{$this->channelsDir}/*.yaml") ?: [];
