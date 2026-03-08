@@ -23,13 +23,13 @@ use const CURLOPT_POSTFIELDS;
 use const CURLOPT_RETURNTRANSFER;
 use const JSON_THROW_ON_ERROR;
 
-/** OpenAI-compatible HTTP client (used by GLM, etc.) */
-final class OpenAiHttpClient
+/** Generic HTTP client for OpenAI-compatible LLM APIs */
+final class LlmHttpClient
 {
     public function __construct(
-        #[Named('openai_api_url')]
+        #[Named('llm_api_url')]
         private readonly string $apiUrl,
-        #[Named('openai_api_key')]
+        #[Named('llm_api_key')]
         private readonly string $apiKey,
     ) {
     }

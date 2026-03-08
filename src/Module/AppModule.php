@@ -75,8 +75,8 @@ class AppModule extends AbstractAppModule
                 $apiUrl = 'https://api.z.ai/api/coding/paas/v4/chat/completions';
             }
 
-            $this->bind()->annotatedWith('openai_api_url')->toInstance($apiUrl);
-            $this->bind()->annotatedWith('openai_api_key')->toInstance($glmApiKey);
+            $this->bind()->annotatedWith('llm_api_url')->toInstance($apiUrl);
+            $this->bind()->annotatedWith('llm_api_key')->toInstance($glmApiKey);
             $this->bind(LlmInterface::class)->to(GlmLlm::class);
 
             return;

@@ -27,7 +27,7 @@
                 <referencedMethod name="H13\FeedPulse\Llm\ClaudeHttpClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\ClaudeLlm::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\GlmLlm::__construct"/>
-                <referencedMethod name="H13\FeedPulse\Llm\OpenAiHttpClient::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Llm\LlmHttpClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Notifier\SlackNotifier::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\DraftStore::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\DraftStore::delete"/>

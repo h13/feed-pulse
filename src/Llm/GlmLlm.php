@@ -12,7 +12,7 @@ final class GlmLlm implements LlmInterface
     private const string MODEL = 'glm-4.7';
 
     public function __construct(
-        private readonly OpenAiHttpClient $http,
+        private readonly LlmHttpClient $http,
     ) {
     }
 
