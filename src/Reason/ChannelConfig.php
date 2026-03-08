@@ -39,7 +39,6 @@ final class ChannelConfig
                 continue;
             }
 
-            /** @var array<string, mixed> $channel */
             $configs[] = $channel;
         }
 

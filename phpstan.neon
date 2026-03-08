@@ -16,3 +16,6 @@ parameters:
         -
             identifier: argument.type
             path: src/Module/AppModule.php
+        -
+            identifier: return.type
+            path: src/Reason/ChannelConfig.php
