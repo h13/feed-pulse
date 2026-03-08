@@ -25,15 +25,37 @@ crawl (RSS)
           → history (PR auto-merge)
 ```
 
+### Be Framework — Metamorphosis Chains
+
+Objects transform through constructor-driven metamorphosis
+(`#[Be]` attributes), with semantic validation (`#[Validate]`)
+aligned to [ALPS descriptors](alps/profile.xml).
+
+```text
+Generation chain:
+  ScoredItemForChannel ──#[Be]──▶ BeDraft (terminal)
+    #[Input] feed, score, topics     #[Inject] LLM, PromptBuilder
+    #[Input] channel, channelConfig  → generates content in constructor
+
+Publish chain:
+  DraftForPublish ──#[Be]──▶ BePublish (terminal)
+    #[Input] draftId, channel, ...   #[Inject] PublisherPool
+                                     → publishes in constructor
+
+Semantic validators (src/Semantic/):
+  Score, Channel, Content, FeedTitle, DraftId
+  → auto-validated by Be Framework via parameter name convention
+```
+
 ### BEAR.Sunday Resources
 
-| Resource              | Method | Description                              |
-| --------------------- | ------ | ---------------------------------------- |
-| `app://self/feed`     | GET    | Crawl RSS feeds, score against interests |
-| `app://self/drafts`   | GET    | List pending drafts                      |
-| `app://self/drafts`   | POST   | Generate drafts from matched feeds       |
-| `app://self/publish`  | POST   | Publish drafts (confirm required)        |
-| `app://self/history`  | GET    | View publish history                     |
+| Resource             | Method | Description                              |
+| -------------------- | ------ | ---------------------------------------- |
+| `app://self/feed`    | GET    | Crawl RSS feeds, score against interests |
+| `app://self/drafts`  | GET    | List pending drafts                      |
+| `app://self/drafts`  | POST   | Generate drafts from matched feeds       |
+| `app://self/publish` | POST   | Publish drafts (confirm required)        |
+| `app://self/history` | GET    | View publish history                     |
 
 ### BEAR.ToolUse Agent Mode
 
