@@ -24,10 +24,7 @@ final readonly class ScoredItemForChannel
     /** @var list<string> */
     public array $matchedTopics;
 
-    /**
-     * @param array<string, mixed> $channelConfig
-     * @param list<string>         $matchedTopics
-     */
+    /** @param array<string, mixed> $channelConfig */
     public function __construct(
         ScoredItem $item,
         public string $channel,
