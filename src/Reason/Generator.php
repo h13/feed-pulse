@@ -16,6 +16,8 @@ use function glob;
 use function implode;
 use function is_array;
 use function is_dir;
+use function is_int;
+use function is_string;
 use function preg_replace;
 use function str_replace;
 use function strtolower;
@@ -37,7 +39,8 @@ final class Generator
     /** @param array<string, mixed> $channelConfig */
     public function generate(ScoredItem $item, array $channelConfig): Draft
     {
-        $persona = $channelConfig['persona'] ?? [];
+        /** @var array<string, mixed> $persona */
+        $persona = is_array($channelConfig['persona'] ?? null) ? $channelConfig['persona'] : [];
         /** @var string $type */
         $type = $channelConfig['type'] ?? 'x';
         /** @var string $channelName */
@@ -56,25 +59,27 @@ final class Generator
         );
     }
 
-    private function buildSystemPrompt(mixed $persona): string
+    /** @param array<string, mixed> $persona */
+    private function buildSystemPrompt(array $persona): string
     {
         $voice = file_get_contents("{$this->promptsDir}/voice.md") ?: '';
         $examples = $this->loadExamples();
 
         $parts = [$voice, '', '## Channel Settings'];
 
-        if (is_array($persona)) {
-            foreach (['tone', 'style', 'language'] as $key) {
-                if (! isset($persona[$key])) {
-                    continue;
-                }
-
-                $parts[] = ucfirst($key) . ': ' . (string) $persona[$key];
+        foreach (['tone', 'style', 'language'] as $key) {
+            $value = $persona[$key] ?? null;
+            if (! is_string($value) && ! is_int($value)) {
+                continue;
             }
 
-            if (isset($persona['max_length'])) {
-                $parts[] = 'Max length: ' . (string) $persona['max_length'] . ' characters';
-            }
+            $parts[] = ucfirst($key) . ': ' . (string) $value;
+        }
+
+        /** @var int|string|null $maxLength */
+        $maxLength = $persona['max_length'] ?? null;
+        if (is_int($maxLength) || is_string($maxLength)) {
+            $parts[] = 'Max length: ' . (string) $maxLength . ' characters';
         }
 
         $parts[] = '';

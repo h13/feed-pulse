@@ -6,11 +6,14 @@ namespace H13\FeedPulse\Source;
 
 use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Reason\Entity\FeedItem;
+use Laminas\Feed\Reader\Entry\EntryInterface;
 use Laminas\Feed\Reader\Reader;
+use Override;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
+use function assert;
 use function error_log;
 use function is_array;
 use function strip_tags;
@@ -27,6 +30,7 @@ final class RssSource implements SourceInterface
     }
 
     /** @return list<FeedItem> */
+    #[Override]
     public function fetch(): array
     {
         $config = Yaml::parseFile($this->configPath);
@@ -60,7 +64,7 @@ final class RssSource implements SourceInterface
 
         $items = [];
         foreach ($feed as $entry) {
-            /** @var \Laminas\Feed\Reader\Entry\EntryInterface $entry */
+            /** @var EntryInterface $entry */
             $items[] = new FeedItem(
                 title: $entry->getTitle() ?: '',
                 link: $entry->getLink() ?: '',

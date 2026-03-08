@@ -40,7 +40,9 @@ final class ChannelConfig
                 continue;
             }
 
-            $configs[] = $channel;
+            /** @var array<string, mixed> $validChannel */
+            $validChannel = $channel;
+            $configs[] = $validChannel;
         }
 
         return $configs;

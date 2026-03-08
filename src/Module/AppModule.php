@@ -6,8 +6,8 @@ namespace H13\FeedPulse\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
-use BEAR\ToolUse\LlmClientInterface;
-use BEAR\ToolUse\ToolUseModule;
+use BEAR\ToolUse\Llm\LlmClientInterface;
+use BEAR\ToolUse\Module\ToolUseModule;
 use H13\FeedPulse\Contract\LlmInterface;
 use H13\FeedPulse\Contract\MatcherInterface;
 use H13\FeedPulse\Contract\NotifierInterface;
@@ -24,26 +24,25 @@ use H13\FeedPulse\Reason\ChannelConfig;
 use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
+use Override;
 
-use function assert;
 use function getenv;
-use function is_string;
 
 class AppModule extends AbstractAppModule
 {
+    #[Override]
     protected function configure(): void
     {
         $this->install(new PackageModule());
         $this->install(new ToolUseModule());
 
-        assert(is_string($this->appDir));
-        $appDir = $this->appDir;
+        $appDir = $this->appMeta->appDir;
 
         (new EnvJson())->load($appDir);
 
         // Shared
         $this->bind()->annotatedWith('app_dir')->toInstance($appDir);
-        $this->bind()->annotatedWith('anthropic_api_key')->toInstance(getenv('ANTHROPIC_API_KEY') ?: '');
+        $this->bind()->annotatedWith('anthropic_api_key')->toInstance(self::env('ANTHROPIC_API_KEY'));
         $this->bind()->annotatedWith('repo_url')->toInstance('https://github.com/h13/feed-pulse');
 
         // Source
@@ -65,7 +64,7 @@ class AppModule extends AbstractAppModule
 
     private function bindNotifier(): void
     {
-        $webhookUrl = getenv('SLACK_WEBHOOK_URL') ?: '';
+        $webhookUrl = self::env('SLACK_WEBHOOK_URL');
 
         if ($webhookUrl !== '') {
             $this->bind()->annotatedWith('slack_webhook_url')->toInstance($webhookUrl);
@@ -79,8 +78,7 @@ class AppModule extends AbstractAppModule
 
     private function buildPublisherPool(): PublisherPool
     {
-        assert(is_string($this->appDir));
-        $channelConfig = new ChannelConfig($this->appDir);
+        $channelConfig = new ChannelConfig($this->appMeta->appDir);
         $channels = $channelConfig->loadEnabled();
         $publishers = [];
 
@@ -113,10 +111,10 @@ class AppModule extends AbstractAppModule
 
     private function createXPublisher(): XPublisher|null
     {
-        $key = getenv('X_API_KEY') ?: '';
-        $secret = getenv('X_API_SECRET') ?: '';
-        $token = getenv('X_ACCESS_TOKEN') ?: '';
-        $tokenSecret = getenv('X_ACCESS_SECRET') ?: '';
+        $key = self::env('X_API_KEY');
+        $secret = self::env('X_API_SECRET');
+        $token = self::env('X_ACCESS_TOKEN');
+        $tokenSecret = self::env('X_ACCESS_SECRET');
 
         if ($key === '' || $secret === '' || $token === '' || $tokenSecret === '') {
             return null;
@@ -128,9 +126,9 @@ class AppModule extends AbstractAppModule
     /** @param array<string, mixed> $config */
     private function createWordPressPublisher(array $config): WordPressPublisher|null
     {
-        $url = getenv('WORDPRESS_API_URL') ?: '';
-        $user = getenv('WORDPRESS_USER') ?: '';
-        $password = getenv('WORDPRESS_APP_PASSWORD') ?: '';
+        $url = self::env('WORDPRESS_API_URL');
+        $user = self::env('WORDPRESS_USER');
+        $password = self::env('WORDPRESS_APP_PASSWORD');
 
         if ($url === '' || $user === '' || $password === '') {
             return null;
@@ -142,5 +140,12 @@ class AppModule extends AbstractAppModule
         $status = $publish['status'] ?? 'draft';
 
         return new WordPressPublisher($url, $user, $password, $status);
+    }
+
+    private static function env(string $name): string
+    {
+        $value = getenv($name);
+
+        return $value !== false ? $value : '';
     }
 }

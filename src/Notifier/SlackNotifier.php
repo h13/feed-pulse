@@ -6,6 +6,7 @@ namespace H13\FeedPulse\Notifier;
 
 use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
+use Override;
 use Ray\Di\Di\Named;
 use RuntimeException;
 
@@ -38,6 +39,7 @@ final class SlackNotifier implements NotifierInterface
     }
 
     /** @param list<Draft> $drafts */
+    #[Override]
     public function notify(array $drafts): void
     {
         $blocks = [
@@ -94,6 +96,7 @@ final class SlackNotifier implements NotifierInterface
         ]);
 
         $response = curl_exec($ch);
+        /** @var int $httpCode */
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

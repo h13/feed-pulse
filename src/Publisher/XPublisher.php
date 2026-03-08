@@ -7,6 +7,7 @@ namespace H13\FeedPulse\Publisher;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\PublishResult;
+use Override;
 use RuntimeException;
 use Throwable;
 
@@ -50,6 +51,7 @@ final class XPublisher implements PublisherInterface
     ) {
     }
 
+    #[Override]
     public function publish(Draft $draft): PublishResult
     {
         try {
@@ -95,6 +97,7 @@ final class XPublisher implements PublisherInterface
         ]);
 
         $response = curl_exec($ch);
+        /** @var int $httpCode */
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

@@ -7,11 +7,13 @@ namespace H13\FeedPulse\Reason;
 use H13\FeedPulse\Contract\MatcherInterface;
 use H13\FeedPulse\Reason\Entity\FeedItem;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
+use Override;
 use Ray\Di\Di\Named;
 use Symfony\Component\Yaml\Yaml;
 
 use function array_filter;
 use function array_map;
+use function assert;
 use function is_array;
 use function str_contains;
 use function strtolower;
@@ -33,6 +35,7 @@ final class Matcher implements MatcherInterface
      *
      * @return list<ScoredItem>
      */
+    #[Override]
     public function match(array $items, float $threshold = 0.5): array
     {
         $interests = $this->loadInterests();

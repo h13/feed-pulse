@@ -5,11 +5,65 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedPsalmSuppress="true"
 >
     <projectFiles>
         <directory name="src"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <file name="src/Module/FakeModule.php"/>
         </ignoreFiles>
     </projectFiles>
+
+    <stubs>
+        <file name="vendor/bear/resource/src/ResourceObject.php"/>
+    </stubs>
+
+    <issueHandlers>
+        <!-- BEAR.Sunday uses DI containers; constructors/methods are called via reflection -->
+        <PossiblyUnusedMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="H13\FeedPulse\Llm\ClaudeClient::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Llm\ClaudeHttpClient::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Llm\ClaudeLlm::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Notifier\SlackNotifier::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\DraftStore::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\DraftStore::delete"/>
+                <referencedMethod name="H13\FeedPulse\Reason\DraftStore::clear"/>
+                <referencedMethod name="H13\FeedPulse\Reason\Generator::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\HistoryStore::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\Matcher::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\StateStore::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Source\RssSource::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Drafts::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Drafts::onGet"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Drafts::onPost"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Feed::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Feed::onGet"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\History::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\History::onGet"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Publish::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Resource\App\Publish::onPost"/>
+            </errorLevel>
+        </PossiblyUnusedMethod>
+
+        <!-- BEAR.Sunday Resource classes are resolved via URI routing, not direct instantiation -->
+        <!-- AppModule is extended by FakeModule (excluded from scan) -->
+        <ClassMustBeFinal>
+            <errorLevel type="suppress">
+                <directory name="src/Resource"/>
+                <file name="src/Module/AppModule.php"/>
+            </errorLevel>
+        </ClassMustBeFinal>
+
+        <!-- AppModule is instantiated by BEAR.Sunday bootstrapper -->
+        <UnusedClass>
+            <errorLevel type="suppress">
+                <file name="src/Module/AppModule.php"/>
+            </errorLevel>
+        </UnusedClass>
+
+        <!-- Standard PHP idiom: getenv()|glob()|file_get_contents() returns string|false -->
+        <RiskyTruthyFalsyComparison errorLevel="suppress"/>
+    </issueHandlers>
 </psalm>

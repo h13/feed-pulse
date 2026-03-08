@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace H13\FeedPulse\Llm;
 
 use H13\FeedPulse\Contract\LlmInterface;
+use Override;
 
 use function array_filter;
 use function array_map;
@@ -19,6 +20,7 @@ final class ClaudeLlm implements LlmInterface
     ) {
     }
 
+    #[Override]
     public function generate(string $systemPrompt, string $userPrompt): string
     {
         /** @var array{content: list<array{type: string, text?: string}>} $data */

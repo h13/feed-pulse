@@ -59,6 +59,8 @@ class Drafts extends ResourceObject
      * Generate new drafts from matched feed items.
      *
      * @param bool $notify Send notification after generation (default: true)
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function onPost(bool $notify = true): static
     {
