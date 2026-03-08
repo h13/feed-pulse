@@ -82,7 +82,9 @@ final class Matcher implements MatcherInterface
         $config = Yaml::parseFile($this->configPath);
         assert(is_array($config));
 
-        /** @var list<array{topic: string, keywords: list<string>, weight: float}> */
-        return $config['interests'] ?? [];
+        /** @var list<array{topic: string, keywords: list<string>, weight: float}> $interests */
+        $interests = $config['interests'] ?? [];
+
+        return $interests;
     }
 }
