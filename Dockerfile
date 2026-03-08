@@ -10,4 +10,6 @@ RUN apk add --no-cache \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN echo 'memory_limit=512M' > /usr/local/etc/php/conf.d/memory.ini
+
 WORKDIR /app
