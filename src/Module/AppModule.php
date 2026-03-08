@@ -16,6 +16,7 @@ use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Llm\ClaudeClient;
 use H13\FeedPulse\Llm\ClaudeLlm;
+use H13\FeedPulse\Llm\GlmLlm;
 use H13\FeedPulse\Notifier\NullNotifier;
 use H13\FeedPulse\Notifier\SlackNotifier;
 use H13\FeedPulse\Publisher\PublisherPool;
@@ -54,7 +55,7 @@ class AppModule extends AbstractAppModule
         $this->bind(MatcherInterface::class)->to(Matcher::class);
 
         // LLM
-        $this->bind(LlmInterface::class)->to(ClaudeLlm::class);
+        $this->bindLlm();
         $this->bind(LlmClientInterface::class)->to(ClaudeClient::class);
 
         // Notifier
@@ -62,6 +63,26 @@ class AppModule extends AbstractAppModule
 
         // Publisher
         $this->bind(PublisherPool::class)->toInstance($this->buildPublisherPool());
+    }
+
+    private function bindLlm(): void
+    {
+        $glmApiKey = self::env('GLM_API_KEY');
+
+        if ($glmApiKey !== '') {
+            $apiUrl = self::env('GLM_API_URL');
+            if ($apiUrl === '') {
+                $apiUrl = 'https://api.z.ai/api/coding/paas/v4/chat/completions';
+            }
+
+            $this->bind()->annotatedWith('openai_api_url')->toInstance($apiUrl);
+            $this->bind()->annotatedWith('openai_api_key')->toInstance($glmApiKey);
+            $this->bind(LlmInterface::class)->to(GlmLlm::class);
+
+            return;
+        }
+
+        $this->bind(LlmInterface::class)->to(ClaudeLlm::class);
     }
 
     private function bindNotifier(): void
