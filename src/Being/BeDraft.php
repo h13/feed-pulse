@@ -30,11 +30,8 @@ use function substr;
 final readonly class BeDraft
 {
     public string $id;
-
     public string $content;
-
     public ScoredItem $item;
-
     public string $createdAt;
 
     /**

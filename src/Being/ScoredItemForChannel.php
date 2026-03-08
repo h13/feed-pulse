@@ -19,7 +19,6 @@ use H13\FeedPulse\Reason\Entity\ScoredItem;
 final readonly class ScoredItemForChannel
 {
     public FeedItem $feed;
-
     public float $score;
 
     /** @var list<string> */
