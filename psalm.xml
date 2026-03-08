@@ -26,6 +26,7 @@
                 <referencedMethod name="H13\FeedPulse\Llm\ClaudeClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\ClaudeHttpClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\ClaudeLlm::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Llm\GlmClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\GlmLlm::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Llm\LlmHttpClient::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Notifier\SlackNotifier::__construct"/>
@@ -55,6 +56,10 @@
                 <referencedMethod name="H13\FeedPulse\Semantic\DraftId::validate"/>
                 <referencedMethod name="H13\FeedPulse\Semantic\FeedTitle::validate"/>
                 <referencedMethod name="H13\FeedPulse\Semantic\Score::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\Feed::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\MatchedTopics::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\ChannelType::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\ChannelConfig::validate"/>
             </errorLevel>
         </PossiblyUnusedMethod>
 
@@ -72,6 +77,7 @@
         <UnusedClass>
             <errorLevel type="suppress">
                 <file name="src/Module/AppModule.php"/>
+                <file name="src/Module/App.php"/>
                 <directory name="src/Being"/>
                 <directory name="src/Semantic"/>
             </errorLevel>

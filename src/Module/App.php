@@ -11,7 +11,7 @@ use BEAR\Sunday\Extension\Router\RouterInterface;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
 
-class App implements AppInterface
+final class App implements AppInterface
 {
     public function __construct(
         public HttpCacheInterface $httpCache,
