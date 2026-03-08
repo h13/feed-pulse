@@ -5,4 +5,5 @@ services:
       - .:/app
     working_dir: /app
     env_file:
-      - env.json
+      - path: env.json
+        required: false
