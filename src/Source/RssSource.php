@@ -12,6 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 use function error_log;
+use function is_array;
 use function strip_tags;
 
 final class RssSource implements SourceInterface
@@ -29,6 +30,9 @@ final class RssSource implements SourceInterface
     public function fetch(): array
     {
         $config = Yaml::parseFile($this->configPath);
+        assert(is_array($config));
+
+        /** @var list<array{name: string, url: string, category: string}> $sources */
         $sources = $config['sources'] ?? [];
         $items = [];
 
@@ -56,6 +60,7 @@ final class RssSource implements SourceInterface
 
         $items = [];
         foreach ($feed as $entry) {
+            /** @var \Laminas\Feed\Reader\Entry\EntryInterface $entry */
             $items[] = new FeedItem(
                 title: $entry->getTitle() ?? '',
                 link: $entry->getLink() ?? '',

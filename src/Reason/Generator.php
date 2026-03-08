@@ -38,7 +38,9 @@ final class Generator
     public function generate(ScoredItem $item, array $channelConfig): Draft
     {
         $persona = $channelConfig['persona'] ?? [];
+        /** @var string $type */
         $type = $channelConfig['type'] ?? 'x';
+        /** @var string $channelName */
         $channelName = $channelConfig['name'] ?? 'unknown';
 
         $systemPrompt = $this->buildSystemPrompt($persona);

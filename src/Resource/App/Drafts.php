@@ -81,7 +81,10 @@ class Drafts extends ResourceObject
         $drafts = [];
 
         foreach ($channels as $channelCfg) {
-            $limit = $channelCfg['publish']['max_per_day'] ?? 5;
+            /** @var array<string, mixed> $publish */
+            $publish = $channelCfg['publish'] ?? [];
+            /** @var int $limit */
+            $limit = $publish['max_per_day'] ?? 5;
             $targets = array_slice($newItems, 0, $limit);
 
             foreach ($targets as $item) {

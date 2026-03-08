@@ -76,7 +76,9 @@ final class HistoryStore
                 continue;
             }
 
-            $history[] = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+            /** @var array<string, mixed> $decoded */
+            $decoded = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+            $history[] = $decoded;
         }
 
         return $history;

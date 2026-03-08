@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use function array_filter;
 use function array_map;
-use function array_values;
+use function is_array;
 use function str_contains;
 use function strtolower;
 use function usort;
@@ -49,7 +49,7 @@ final class Matcher implements MatcherInterface
 
         usort($filtered, static fn (ScoredItem $a, ScoredItem $b) => $b->score <=> $a->score);
 
-        return array_values($filtered);
+        return $filtered;
     }
 
     /** @param list<array{topic: string, keywords: list<string>, weight: float}> $interests */
@@ -80,7 +80,9 @@ final class Matcher implements MatcherInterface
     private function loadInterests(): array
     {
         $config = Yaml::parseFile($this->configPath);
+        assert(is_array($config));
 
+        /** @var list<array{topic: string, keywords: list<string>, weight: float}> */
         return $config['interests'] ?? [];
     }
 }

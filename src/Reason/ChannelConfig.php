@@ -29,11 +29,17 @@ final class ChannelConfig
         $configs = [];
         foreach ($files as $file) {
             $data = Yaml::parseFile($file);
-            if (! is_array($data) || ! ($data['channel']['enabled'] ?? false)) {
+            if (! is_array($data)) {
                 continue;
             }
 
-            $configs[] = $data['channel'];
+            /** @var array<string, mixed> $data */
+            $channel = $data['channel'] ?? null;
+            if (! is_array($channel) || ! ($channel['enabled'] ?? false)) {
+                continue;
+            }
+
+            $configs[] = $channel;
         }
 
         return $configs;

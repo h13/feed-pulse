@@ -79,7 +79,9 @@ class AppModule extends AbstractAppModule
         $publishers = [];
 
         foreach ($channels as $config) {
+            /** @var string $name */
             $name = $config['name'] ?? '';
+            /** @var string $type */
             $type = $config['type'] ?? '';
             $publisher = $this->createPublisher($type, $config);
 
@@ -128,7 +130,10 @@ class AppModule extends AbstractAppModule
             return null;
         }
 
-        $status = $config['publish']['status'] ?? 'draft';
+        /** @var array<string, mixed> $publish */
+        $publish = $config['publish'] ?? [];
+        /** @var string $status */
+        $status = $publish['status'] ?? 'draft';
 
         return new WordPressPublisher($url, $user, $password, $status);
     }
