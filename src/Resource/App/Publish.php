@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace H13\FeedPulse\Resource\App;
 
+use Be\Framework\BecomingInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\ToolUse\Attribute\Tool;
-use H13\FeedPulse\Publisher\PublisherPool;
+use H13\FeedPulse\Being\BePublish;
+use H13\FeedPulse\Being\DraftForPublish;
 use H13\FeedPulse\Reason\DraftStore;
 use H13\FeedPulse\Reason\HistoryStore;
 use Ray\Di\Di\Inject;
@@ -14,6 +16,7 @@ use Ray\Di\Di\Inject;
 use function array_filter;
 use function array_map;
 use function array_values;
+use function assert;
 use function count;
 
 #[Tool(description: 'Publish pending drafts to configured channels', confirm: true)]
@@ -21,7 +24,7 @@ class Publish extends ResourceObject
 {
     #[Inject]
     public function __construct(
-        private readonly PublisherPool $publisherPool,
+        private readonly BecomingInterface $becoming,
         private readonly DraftStore $draftStore,
         private readonly HistoryStore $historyStore,
     ) {
@@ -49,7 +52,11 @@ class Publish extends ResourceObject
 
         $results = [];
         foreach ($drafts as $draft) {
-            $result = $this->publisherPool->publish($draft);
+            $entry = new DraftForPublish($draft);
+            $bePublish = ($this->becoming)($entry);
+            assert($bePublish instanceof BePublish);
+
+            $result = $bePublish->result;
             $results[] = $result;
 
             if (! $result->isSuccess()) {

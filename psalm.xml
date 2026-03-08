@@ -30,7 +30,7 @@
                 <referencedMethod name="H13\FeedPulse\Reason\DraftStore::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\DraftStore::delete"/>
                 <referencedMethod name="H13\FeedPulse\Reason\DraftStore::clear"/>
-                <referencedMethod name="H13\FeedPulse\Reason\Generator::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Reason\PromptBuilder::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\HistoryStore::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\Matcher::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Reason\StateStore::__construct"/>
@@ -44,6 +44,15 @@
                 <referencedMethod name="H13\FeedPulse\Resource\App\History::onGet"/>
                 <referencedMethod name="H13\FeedPulse\Resource\App\Publish::__construct"/>
                 <referencedMethod name="H13\FeedPulse\Resource\App\Publish::onPost"/>
+                <!-- Be Framework: constructors called via reflection (Becoming engine) -->
+                <referencedMethod name="H13\FeedPulse\Being\BeDraft::__construct"/>
+                <referencedMethod name="H13\FeedPulse\Being\BePublish::__construct"/>
+                <!-- Be Framework: Semantic validators called via SemanticValidator -->
+                <referencedMethod name="H13\FeedPulse\Semantic\Channel::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\Content::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\DraftId::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\FeedTitle::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\Score::validate"/>
             </errorLevel>
         </PossiblyUnusedMethod>
 
@@ -57,9 +66,12 @@
         </ClassMustBeFinal>
 
         <!-- AppModule is instantiated by BEAR.Sunday bootstrapper -->
+        <!-- Being/Semantic classes are instantiated via Be Framework reflection -->
         <UnusedClass>
             <errorLevel type="suppress">
                 <file name="src/Module/AppModule.php"/>
+                <directory name="src/Being"/>
+                <directory name="src/Semantic"/>
             </errorLevel>
         </UnusedClass>
 

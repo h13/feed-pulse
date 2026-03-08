@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace H13\FeedPulse\Module;
 
+use Be\Framework\Module\BeModule;
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\ToolUse\Llm\LlmClientInterface;
@@ -35,6 +36,7 @@ class AppModule extends AbstractAppModule
     {
         $this->install(new PackageModule());
         $this->install(new ToolUseModule());
+        $this->install(new BeModule('H13\\FeedPulse\\Semantic'));
 
         $appDir = $this->appMeta->appDir;
 

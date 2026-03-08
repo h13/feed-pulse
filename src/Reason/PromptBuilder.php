@@ -4,63 +4,31 @@ declare(strict_types=1);
 
 namespace H13\FeedPulse\Reason;
 
-use H13\FeedPulse\Contract\LlmInterface;
-use H13\FeedPulse\Reason\Entity\Draft;
 use H13\FeedPulse\Reason\Entity\ScoredItem;
 use Ray\Di\Di\Named;
 
 use function array_map;
-use function date;
 use function file_get_contents;
 use function glob;
 use function implode;
-use function is_array;
 use function is_dir;
 use function is_int;
 use function is_string;
-use function preg_replace;
-use function str_replace;
-use function strtolower;
-use function substr;
 use function ucfirst;
 
-final class Generator
+final class PromptBuilder
 {
     private readonly string $promptsDir;
 
     public function __construct(
-        private readonly LlmInterface $llm,
         #[Named('app_dir')]
         string $appDir,
     ) {
         $this->promptsDir = $appDir . '/prompts';
     }
 
-    /** @param array<string, mixed> $channelConfig */
-    public function generate(ScoredItem $item, array $channelConfig): Draft
-    {
-        /** @var array<string, mixed> $persona */
-        $persona = is_array($channelConfig['persona'] ?? null) ? $channelConfig['persona'] : [];
-        /** @var string $type */
-        $type = $channelConfig['type'] ?? 'x';
-        /** @var string $channelName */
-        $channelName = $channelConfig['name'] ?? 'unknown';
-
-        $systemPrompt = $this->buildSystemPrompt($persona);
-        $userPrompt = $this->buildUserPrompt($type, $item);
-        $content = $this->llm->generate($systemPrompt, $userPrompt);
-
-        return new Draft(
-            id: $this->toDraftId($channelName, $item),
-            channel: $channelName,
-            content: $content,
-            item: $item,
-            createdAt: date('c'),
-        );
-    }
-
     /** @param array<string, mixed> $persona */
-    private function buildSystemPrompt(array $persona): string
+    public function buildSystemPrompt(array $persona): string
     {
         $voice = file_get_contents("{$this->promptsDir}/voice.md") ?: '';
         $examples = $this->loadExamples();
@@ -89,7 +57,7 @@ final class Generator
         return implode("\n", $parts);
     }
 
-    private function buildUserPrompt(string $type, ScoredItem $item): string
+    public function buildUserPrompt(string $type, ScoredItem $item): string
     {
         $promptName = $type === 'wordpress' ? 'blog-article' : 'sns-post';
         $template = file_get_contents("{$this->promptsDir}/{$promptName}.md") ?: '';
@@ -119,13 +87,5 @@ final class Generator
             "\n\n---\n\n",
             array_map(static fn (string $f) => file_get_contents($f) ?: '', $files),
         );
-    }
-
-    private function toDraftId(string $channel, ScoredItem $item): string
-    {
-        $slug = preg_replace('/[^a-z0-9]+/', '-', strtolower($item->feed->title)) ?? '';
-        $slug = substr($slug, 0, 60);
-
-        return "{$channel}-{$slug}";
     }
 }
