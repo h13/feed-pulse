@@ -62,9 +62,9 @@ final class RssSource implements SourceInterface
         foreach ($feed as $entry) {
             /** @var \Laminas\Feed\Reader\Entry\EntryInterface $entry */
             $items[] = new FeedItem(
-                title: $entry->getTitle() ?? '',
-                link: $entry->getLink() ?? '',
-                description: strip_tags($entry->getDescription() ?? ''),
+                title: $entry->getTitle() ?: '',
+                link: $entry->getLink() ?: '',
+                description: strip_tags($entry->getDescription() ?: ''),
                 pubDate: $entry->getDateCreated()?->format('c') ?? '',
                 source: $source['name'],
                 category: $source['category'],

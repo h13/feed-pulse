@@ -5,10 +5,14 @@ parameters:
     excludePaths:
         - src/Module/FakeModule.php
     ignoreErrors:
-        - identifier: class.notFound
-          path: src/Llm/ClaudeClient.php
-        - identifier: argument.type
-          path: src/Module/AppModule.php
-          message: '#ToolUseModule#'
-        - identifier: property.notFound
-          path: src/Module/AppModule.php
+        -
+            identifier: class.notFound
+            paths:
+                - src/Llm/ClaudeClient.php
+                - src/Module/AppModule.php
+        -
+            identifier: property.notFound
+            path: src/Module/AppModule.php
+        -
+            identifier: argument.type
+            path: src/Module/AppModule.php

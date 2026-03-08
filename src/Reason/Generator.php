@@ -69,11 +69,11 @@ final class Generator
                     continue;
                 }
 
-                $parts[] = ucfirst($key) . ": {$persona[$key]}";
+                $parts[] = ucfirst($key) . ': ' . (string) $persona[$key];
             }
 
             if (isset($persona['max_length'])) {
-                $parts[] = "Max length: {$persona['max_length']} characters";
+                $parts[] = 'Max length: ' . (string) $persona['max_length'] . ' characters';
             }
         }
 
