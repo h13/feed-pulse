@@ -26,12 +26,18 @@ final readonly class BePublish
     public PublishResult $result;
 
     public function __construct(
-        #[Input] public string $draftId,
-        #[Input] public string $channel,
-        #[Input] public string $content,
-        #[Input] public ScoredItem $item,
-        #[Input] public string $createdAt,
-        #[Inject] PublisherPool $publisherPool,
+        #[Input]
+        public string $draftId,
+        #[Input]
+        public string $channel,
+        #[Input]
+        public string $content,
+        #[Input]
+        public ScoredItem $item,
+        #[Input]
+        public string $createdAt,
+        #[Inject]
+        PublisherPool $publisherPool,
     ) {
         $draft = new Draft(
             id: $draftId,

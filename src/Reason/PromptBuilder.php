@@ -14,6 +14,7 @@ use function implode;
 use function is_dir;
 use function is_int;
 use function is_string;
+use function str_replace;
 use function ucfirst;
 
 final class PromptBuilder

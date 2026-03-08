@@ -30,8 +30,11 @@ use function substr;
 final readonly class BeDraft
 {
     public string $id;
+
     public string $content;
+
     public ScoredItem $item;
+
     public string $createdAt;
 
     /**
@@ -39,14 +42,22 @@ final readonly class BeDraft
      * @param array<string, mixed> $channelConfig
      */
     public function __construct(
-        #[Input] public FeedItem $feed,
-        #[Input] public float $score,
-        #[Input] public array $matchedTopics,
-        #[Input] public string $channel,
-        #[Input] public string $channelType,
-        #[Input] public array $channelConfig,
-        #[Inject] LlmInterface $llm,
-        #[Inject] PromptBuilder $promptBuilder,
+        #[Input]
+        public FeedItem $feed,
+        #[Input]
+        public float $score,
+        #[Input]
+        public array $matchedTopics,
+        #[Input]
+        public string $channel,
+        #[Input]
+        public string $channelType,
+        #[Input]
+        public array $channelConfig,
+        #[Inject]
+        LlmInterface $llm,
+        #[Inject]
+        PromptBuilder $promptBuilder,
     ) {
         $this->item = new ScoredItem(
             feed: $feed,
