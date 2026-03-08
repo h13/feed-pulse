@@ -25,7 +25,9 @@ use H13\FeedPulse\Reason\Matcher;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
 
+use function assert;
 use function getenv;
+use function is_string;
 
 class AppModule extends AbstractAppModule
 {
@@ -34,10 +36,13 @@ class AppModule extends AbstractAppModule
         $this->install(new PackageModule());
         $this->install(new ToolUseModule());
 
-        (new EnvJson())->load($this->appDir);
+        assert(is_string($this->appDir));
+        $appDir = $this->appDir;
+
+        (new EnvJson())->load($appDir);
 
         // Shared
-        $this->bind()->annotatedWith('app_dir')->toInstance($this->appDir);
+        $this->bind()->annotatedWith('app_dir')->toInstance($appDir);
         $this->bind()->annotatedWith('anthropic_api_key')->toInstance(getenv('ANTHROPIC_API_KEY') ?: '');
         $this->bind()->annotatedWith('repo_url')->toInstance('https://github.com/h13/feed-pulse');
 
@@ -74,6 +79,7 @@ class AppModule extends AbstractAppModule
 
     private function buildPublisherPool(): PublisherPool
     {
+        assert(is_string($this->appDir));
         $channelConfig = new ChannelConfig($this->appDir);
         $channels = $channelConfig->loadEnabled();
         $publishers = [];

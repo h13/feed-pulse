@@ -26,6 +26,7 @@ final class ChannelConfig
     {
         $files = glob("{$this->channelsDir}/*.yaml") ?: [];
 
+        /** @var list<array<string, mixed>> $configs */
         $configs = [];
         foreach ($files as $file) {
             $data = Yaml::parseFile($file);

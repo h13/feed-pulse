@@ -4,18 +4,5 @@ parameters:
         - src
     excludePaths:
         - src/Module/FakeModule.php
-    ignoreErrors:
-        -
-            identifier: class.notFound
-            paths:
-                - src/Llm/ClaudeClient.php
-                - src/Module/AppModule.php
-        -
-            identifier: property.notFound
-            path: src/Module/AppModule.php
-        -
-            identifier: argument.type
-            path: src/Module/AppModule.php
-        -
-            identifier: return.type
-            path: src/Reason/ChannelConfig.php
+    scanDirectories:
+        - vendor/bear/tool-use/src
