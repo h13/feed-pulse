@@ -75,6 +75,13 @@
             </errorLevel>
         </UnusedClass>
 
+        <!-- Be Framework: promoted properties in Being classes are read via reflection -->
+        <PossiblyUnusedProperty>
+            <errorLevel type="suppress">
+                <directory name="src/Being"/>
+            </errorLevel>
+        </PossiblyUnusedProperty>
+
         <!-- Standard PHP idiom: getenv()|glob()|file_get_contents() returns string|false -->
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
     </issueHandlers>
