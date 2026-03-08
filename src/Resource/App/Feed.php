@@ -30,8 +30,6 @@ class Feed extends ResourceObject
     /**
      * @param float $threshold Minimum score to include (default: 0.5)
      * @param bool  $newOnly   Only return items not previously processed (default: true)
-     *
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function onGet(float $threshold = 0.5, bool $newOnly = true): static
     {

@@ -29,6 +29,10 @@
     <rule ref="rulesets/controversial.xml/CamelCaseClassName"/>
     <rule ref="rulesets/controversial.xml/CamelCasePropertyName"/>
     <rule ref="rulesets/controversial.xml/CamelCaseMethodName"/>
-    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
+    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag">
+        <properties>
+            <property name="ignorepattern" value="/^on(Get|Post|Put|Patch|Delete)$/"/>
+        </properties>
+    </rule>
     <rule ref="rulesets/cleancode.xml/ElseExpression"/>
 </ruleset>
