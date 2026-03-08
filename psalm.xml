@@ -60,6 +60,8 @@
                 <referencedMethod name="H13\FeedPulse\Semantic\MatchedTopics::validate"/>
                 <referencedMethod name="H13\FeedPulse\Semantic\ChannelType::validate"/>
                 <referencedMethod name="H13\FeedPulse\Semantic\ChannelConfig::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\Item::validate"/>
+                <referencedMethod name="H13\FeedPulse\Semantic\CreatedAt::validate"/>
             </errorLevel>
         </PossiblyUnusedMethod>
 

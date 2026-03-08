@@ -22,7 +22,7 @@ final class GlmLlm implements LlmInterface
         /** @var array{choices: list<array{message: array{content: string}}>} $data */
         $data = $this->http->request([
             'model' => self::MODEL,
-            'max_tokens' => 1024,
+            'max_tokens' => 8192,
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $userPrompt],
