@@ -15,15 +15,22 @@ use H13\FeedPulse\Contract\NotifierInterface;
 use H13\FeedPulse\Contract\PublisherInterface;
 use H13\FeedPulse\Contract\SourceInterface;
 use H13\FeedPulse\Llm\ClaudeClient;
+use H13\FeedPulse\Llm\ClaudeHttpClient;
 use H13\FeedPulse\Llm\ClaudeLlm;
+use H13\FeedPulse\Llm\GlmClient;
 use H13\FeedPulse\Llm\GlmLlm;
+use H13\FeedPulse\Llm\LlmHttpClient;
 use H13\FeedPulse\Notifier\NullNotifier;
 use H13\FeedPulse\Notifier\SlackNotifier;
 use H13\FeedPulse\Publisher\PublisherPool;
 use H13\FeedPulse\Publisher\WordPressPublisher;
 use H13\FeedPulse\Publisher\XPublisher;
 use H13\FeedPulse\Reason\ChannelConfig;
+use H13\FeedPulse\Reason\DraftStore;
+use H13\FeedPulse\Reason\HistoryStore;
 use H13\FeedPulse\Reason\Matcher;
+use H13\FeedPulse\Reason\PromptBuilder;
+use H13\FeedPulse\Reason\StateStore;
 use H13\FeedPulse\Source\RssSource;
 use Koriym\EnvJson\EnvJson;
 use Override;
@@ -48,6 +55,13 @@ class AppModule extends AbstractAppModule
         $this->bind()->annotatedWith('anthropic_api_key')->toInstance(self::env('ANTHROPIC_API_KEY'));
         $this->bind()->annotatedWith('repo_url')->toInstance('https://github.com/h13/feed-pulse');
 
+        // State & Stores
+        $this->bind(StateStore::class);
+        $this->bind(DraftStore::class);
+        $this->bind(HistoryStore::class);
+        $this->bind(ChannelConfig::class);
+        $this->bind(PromptBuilder::class);
+
         // Source
         $this->bind(SourceInterface::class)->to(RssSource::class);
 
@@ -56,7 +70,6 @@ class AppModule extends AbstractAppModule
 
         // LLM
         $this->bindLlm();
-        $this->bind(LlmClientInterface::class)->to(ClaudeClient::class);
 
         // Notifier
         $this->bindNotifier();
@@ -77,12 +90,16 @@ class AppModule extends AbstractAppModule
 
             $this->bind()->annotatedWith('llm_api_url')->toInstance($apiUrl);
             $this->bind()->annotatedWith('llm_api_key')->toInstance($glmApiKey);
+            $this->bind(LlmHttpClient::class);
             $this->bind(LlmInterface::class)->to(GlmLlm::class);
+            $this->bind(LlmClientInterface::class)->to(GlmClient::class);
 
             return;
         }
 
+        $this->bind(ClaudeHttpClient::class);
         $this->bind(LlmInterface::class)->to(ClaudeLlm::class);
+        $this->bind(LlmClientInterface::class)->to(ClaudeClient::class);
     }
 
     private function bindNotifier(): void
